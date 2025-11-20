@@ -15,22 +15,24 @@ const data = [
 
 export const SessionsChart: React.FC = () => {
   return (
-    <div className="bg-[#17181A] p-6 rounded-3xl border border-gray-800/50">
-      <div className="flex justify-between items-start mb-8">
+    <div className="bg-[#17181A] p-5 rounded-[20px] border border-gray-800/50">
+      <div className="flex justify-between items-start mb-5">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">Number of Sessions</h2>
-          <div className="flex items-center text-gray-400 text-sm">
-            <Diamond size={14} className="mr-2 text-gray-500" />
-            <span>New Clio Car Launch | Renault</span>
+          <h2 className="text-[40px] font-semibold leading-[48px] text-white mb-1 tracking-[-0.8px]">Number of Sessions</h2>
+          <div className="flex items-center gap-1.5 text-[#ABAEB3] text-sm">
+            <div className="w-5 h-5">
+              <Diamond size={20} className="text-gray-500" />
+            </div>
+            <span className="font-semibold text-lg leading-[21.6px]">New Clio Car Launch | Renault</span>
           </div>
         </div>
-        <button className="flex items-center space-x-1 text-xs font-medium text-gray-400 bg-[#1F1F1F] px-3 py-1.5 rounded-full hover:text-white transition-colors border border-gray-700/50">
+        <button className="flex items-center gap-1.5 text-xs font-medium text-white bg-[#414141] px-3 py-2 rounded-full hover:opacity-80 transition-opacity">
           <span>See All Data</span>
-          <ArrowUpRight size={14} />
+          <ArrowUpRight size={16} />
         </button>
       </div>
 
-      <div className="h-[250px] w-full">
+      <div className="h-[260px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
@@ -39,8 +41,8 @@ export const SessionsChart: React.FC = () => {
                 <stop offset="95%" stopColor="#FF3B5C" stopOpacity={0}/>
               </linearGradient>
               <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.2}/>
-                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#1500FE" stopOpacity={0.2}/>
+                <stop offset="95%" stopColor="#1500FE" stopOpacity={0}/>
               </linearGradient>
             </defs>
             <XAxis 
@@ -71,7 +73,7 @@ export const SessionsChart: React.FC = () => {
             <Area 
               type="monotone" 
               dataKey="visitors" 
-              stroke="#3B82F6" 
+              stroke="#1500FE" 
               strokeWidth={2}
               fillOpacity={1} 
               fill="url(#colorVisitors)" 
@@ -80,14 +82,14 @@ export const SessionsChart: React.FC = () => {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex justify-center items-center mt-6 space-x-8">
-        <div className="flex items-center">
-          <span className="w-3 h-3 rounded-full bg-[#FF3B5C] mr-2"></span>
-          <span className="text-sm text-gray-400">Number of Sessions</span>
+      <div className="flex justify-center items-center mt-5 gap-5">
+        <div className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded bg-[#FF3856]"></span>
+          <span className="text-base text-[#ABAEB3]">Number of Sessions</span>
         </div>
-        <div className="flex items-center">
-          <span className="w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
-          <span className="text-sm text-gray-400">Number of Unique Visitors</span>
+        <div className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded bg-[#1500FE]"></span>
+          <span className="text-base text-[#ABAEB3]">Number of Unique Visitors</span>
         </div>
       </div>
     </div>

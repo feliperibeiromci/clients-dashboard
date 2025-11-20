@@ -1,6 +1,5 @@
 import React from 'react'
 import { Logo } from './Logo'
-import { LogOut } from 'lucide-react'
 
 interface NavItem {
   label: string
@@ -71,11 +70,14 @@ const SettingsIcon: React.FC<{ className?: string }> = ({ className }) => (
 )
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeItem = 'home', onNavigate }) => {
-  const navItems: NavItem[] = [
+  const primaryNavItems: NavItem[] = [
     { id: 'home', label: 'Home', icon: <HomeIcon className="w-6 h-6" /> },
     { id: 'projects', label: 'Projects', icon: <ProjectsIcon className="w-6 h-6" /> },
     { id: 'clients', label: 'Clients', icon: <ClientsIcon className="w-6 h-6" /> },
     { id: 'reports', label: 'Reports', icon: <ReportsIcon className="w-6 h-6" /> },
+  ]
+
+  const secondaryNavItems: NavItem[] = [
     { id: 'users', label: 'Users', icon: <UsersIcon className="w-6 h-6" /> },
     { id: 'settings', label: 'Settings', icon: <SettingsIcon className="w-6 h-6" /> },
   ]
@@ -87,68 +89,113 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeItem = 'home', onNavigat
     }
   }
 
+  const renderNavItem = (item: NavItem) => {
+    const isActive = activeItem === item.id;
+
+    return (
+      <li key={item.id}>
+        <a
+          href="#"
+          onClick={(e) => handleNavigation(e, item.id)}
+          className={`
+            relative flex items-center gap-2.5 px-3 py-4 rounded-lg transition-all duration-500 ease-in-out group isolate
+            ${isActive
+              ? 'bg-[#FF3856] text-white' 
+              : 'text-[#C7C9CD] hover:text-white'}
+          `}
+        >
+          {/* Gradient Border on Hover - for ALL items when not active */}
+          {!isActive && (
+            <>
+              {/* Blur shadow gradient border (glow effect) */}
+              <div 
+                className="absolute inset-0 rounded-lg pointer-events-none opacity-0 group-hover:opacity-50 blur-sm transition-opacity duration-500 ease-in-out z-0"
+                style={{
+                  background: 'linear-gradient(to right, #FF9600, #FF3856, #A035DD, #1500FE, #00BBFF)',
+                }}
+              />
+              {/* Main gradient border - only border */}
+              <div 
+                className="absolute inset-0 rounded-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-[1]"
+                style={{
+                  background: 'linear-gradient(to right, #FF9600, #FF3856, #A035DD, #1500FE, #00BBFF)',
+                  padding: '2px',
+                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMaskComposite: 'xor',
+                  mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  maskComposite: 'exclude',
+                }}
+              />
+              {/* Inner background - matches sidebar background */}
+              <div className="absolute inset-[2px] rounded-lg bg-[#17181A] z-[1] pointer-events-none" />
+              {/* Subtle background on hover */}
+              <div className="absolute inset-[2px] rounded-lg bg-[#17181A] group-hover:bg-white/5 transition-colors duration-500 ease-in-out z-[2] pointer-events-none" />
+            </>
+          )}
+
+          <span className="relative z-10">{item.icon}</span>
+          <span className="relative z-10 font-medium text-xl leading-[24px] tracking-[-0.4px]">{item.label}</span>
+        </a>
+      </li>
+    )
+  }
+
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-[#17181A] text-white flex flex-col border-r border-gray-800/20 z-50">
-      <div className="p-6">
-        <Logo />
-      </div>
-
-      <nav className="flex-1 px-4">
-        <ul className="space-y-4">
-          {navItems.map((item) => {
-            const isActive = activeItem === item.id;
-            
-            return (
-              <li key={item.id}>
-                <a
-                  href="#"
-                  onClick={(e) => handleNavigation(e, item.id)}
-                  className={`
-                    relative flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-500 ease-in-out group
-                    ${isActive 
-                      ? 'bg-[#FF3B5C] text-white shadow-lg shadow-red-500/20' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'}
-                  `}
-                >
-                  {/* Gradient Border on Hover (2px thickness) */}
-                  <div 
-                    className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out"
-                    style={{
-                      padding: '2px',
-                      background: 'linear-gradient(to right, #FF9600, #FF3856, #A035DD, #1500FE, #00BBFF)',
-                      maskImage: 'linear-gradient(#fff 0 0), linear-gradient(#fff 0 0)',
-                      maskClip: 'content-box, border-box',
-                      maskComposite: 'exclude',
-                      WebkitMaskImage: 'linear-gradient(#fff 0 0), linear-gradient(#fff 0 0)',
-                      WebkitMaskClip: 'content-box, border-box',
-                      WebkitMaskComposite: 'xor'
-                    }}
-                  />
-
-                  <span className="relative z-10">{item.icon}</span>
-                  <span className="relative z-10 font-medium text-sm">{item.label}</span>
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
-
-      <div className="p-6 mt-auto">
-        <div className="flex items-center space-x-3 p-3 rounded-xl bg-[#17181A]">
-          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center text-gray-400">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+    <aside className="fixed left-0 top-0 h-full w-[320px] flex items-center gap-[10px] p-2 z-50">
+      {/* Nav-side container - external container with no background */}
+      <div className="h-full flex flex-col gap-[10px] flex-1">
+        {/* Inner container with background #17181A and rounded corners */}
+        <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 h-full">
+          {/* Logo section */}
+          <div className="flex flex-col">
+            <Logo />
+            {/* Divider after logo */}
+            <div className="h-px bg-[#5D6166] w-full" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white font-medium text-sm truncate">Michele Heron</p>
-            <p className="text-gray-500 text-xs truncate">Admin</p>
+
+          {/* Navigation section */}
+          <nav className="flex-1 flex flex-col gap-5">
+            {/* Primary Navigation Items */}
+            <ul className="space-y-2">
+              {primaryNavItems.map((item) => renderNavItem(item))}
+            </ul>
+
+            {/* Divider between primary and secondary nav */}
+            <div className="h-px bg-[#5D6166] w-full" />
+
+            {/* Secondary Navigation Items */}
+            <ul className="space-y-2">
+              {secondaryNavItems.map((item) => renderNavItem(item))}
+            </ul>
+          </nav>
+
+          {/* User profile section */}
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#8F949A] flex items-center justify-center bg-transparent flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#ABAEB3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="#ABAEB3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[#F1F2F3] font-medium text-lg leading-[21.6px] tracking-[-0.36px] truncate">Michele Heron</p>
+              <p className="text-[#ABAEB3] font-medium text-sm leading-[18.2px] tracking-[-0.28px] truncate">Admin</p>
+            </div>
+            <button 
+              className="text-[#ABAEB3] hover:text-white transition-colors flex-shrink-0"
+              onMouseEnter={(e) => {
+                const icon = e.currentTarget.querySelector('i');
+                if (icon) icon.style.color = '#ffffff';
+              }}
+              onMouseLeave={(e) => {
+                const icon = e.currentTarget.querySelector('i');
+                if (icon) icon.style.color = '#ABAEB3';
+              }}
+            >
+              {/* Remix Icon: ri-logout-box-r-line */}
+              <i className="ri-logout-box-r-line text-2xl leading-none" style={{ color: '#ABAEB3', fontSize: '24px' }}></i>
+            </button>
           </div>
-          <button className="text-gray-400 hover:text-white transition-colors">
-            <LogOut size={18} />
-          </button>
         </div>
       </div>
     </aside>

@@ -11,42 +11,44 @@ const terms = [
 
 export const SEOTermsTable: React.FC = () => {
   return (
-    <div className="bg-[#17181A] p-6 rounded-3xl border border-gray-800/50 h-full">
-      <div className="flex justify-between items-start mb-8">
+    <div className="bg-[#17181A] p-5 rounded-[20px] border border-gray-800/50 h-full">
+      <div className="flex justify-between items-start mb-5">
         <div>
-          <h2 className="text-xl font-bold text-white mb-1">Most Searched SEO Terms</h2>
-          <div className="flex items-center text-gray-400 text-sm">
-            <Diamond size={14} className="mr-2 text-gray-500" />
-            <span>New Clio Car Launch | Renault</span>
+          <h2 className="text-2xl font-semibold leading-[28.8px] text-white mb-1 tracking-[-0.48px]">Most Searched SEO Terms</h2>
+          <div className="flex items-center gap-1.5 text-[#ABAEB3]">
+            <div className="w-5 h-5">
+              <Diamond size={20} className="text-gray-500" />
+            </div>
+            <span className="font-semibold text-lg leading-[21.6px]">New Clio Car Launch | Renault</span>
           </div>
         </div>
-        <button className="flex items-center space-x-1 text-xs font-medium text-gray-400 bg-[#1F1F1F] px-3 py-1.5 rounded-full hover:text-white transition-colors border border-gray-700/50">
+        <button className="flex items-center gap-1.5 text-xs font-medium text-white bg-[#414141] px-3 py-2 rounded-full hover:opacity-80 transition-opacity">
           <span>See All Data</span>
-          <ArrowUpRight size={14} />
+          <ArrowUpRight size={16} />
         </button>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="text-gray-500 border-b border-gray-800/50">
-              <th className="pb-4 pl-4 font-medium">Rank #</th>
-              <th className="pb-4 font-medium">Term</th>
-              <th className="pb-4 text-center font-medium">Last 7 Days</th>
-              <th className="pb-4 text-center font-medium">Last 30 Days</th>
-              <th className="pb-4 text-center font-medium">Lorem Ipsum</th>
-              <th className="pb-4 text-center font-medium">Lorem Ipsum</th>
+            <tr className="text-[#C7C9CD] border-b border-gray-800/50">
+              <th className="pb-4 pl-4 font-semibold text-base">Rank #</th>
+              <th className="pb-4 font-semibold text-base text-center">Term</th>
+              <th className="pb-4 text-center font-semibold text-base">Last 7 Days</th>
+              <th className="pb-4 text-center font-semibold text-base">Last 30 Days</th>
+              <th className="pb-4 text-center font-semibold text-base">Lorem Ipsum</th>
+              <th className="pb-4 text-center font-semibold text-base">Lorem Ipsum</th>
             </tr>
           </thead>
-          <tbody className="text-gray-300">
+          <tbody className="text-[#C7C9CD]">
             {terms.map((item, index) => (
               <tr key={index} className="group hover:bg-white/5 transition-colors">
-                <td className="py-4 pl-4 text-gray-500">{item.rank}</td>
-                <td className="py-4 font-medium">{item.term}</td>
-                <td className="py-4 text-center">{item.last7}</td>
-                <td className="py-4 text-center">{item.last30}</td>
-                <td className="py-4 text-center text-gray-500">{item.custom1}</td>
-                <td className="py-4 text-center text-gray-500">{item.custom2}</td>
+                <td className="py-3 pl-4 text-sm text-center">{item.rank}</td>
+                <td className="py-3 text-sm text-center">{item.term}</td>
+                <td className="py-3 text-center text-sm">{item.last7}</td>
+                <td className="py-3 text-center text-sm">{item.last30}</td>
+                <td className="py-3 text-center text-sm">{item.custom1}</td>
+                <td className="py-3 text-center text-sm">{item.custom2}</td>
               </tr>
             ))}
           </tbody>
