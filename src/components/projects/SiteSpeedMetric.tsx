@@ -17,6 +17,7 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
   value,
   status,
 }) => {
+
   // Calcular comprimento do arco para o gauge semicircular
   const radius = 110
   const circumference = Math.PI * radius // Comprimento do semicírculo

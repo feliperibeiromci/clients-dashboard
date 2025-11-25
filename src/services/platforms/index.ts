@@ -5,3 +5,6 @@ export const platformsService = {
   // Implementações futuras
 }
 
+// Arquivos de serviços criados mas não exportados ainda:
+// - wordpress.ts (pronto para uso quando necessário)
+

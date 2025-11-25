@@ -5,3 +5,7 @@ export const googleService = {
   // Implementações futuras
 }
 
+// Arquivos de serviços criados mas não exportados ainda:
+// - analytics.ts (pronto para uso quando necessário)
+// - pagespeed.ts (pronto para uso quando necessário)
+

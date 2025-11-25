@@ -5,3 +5,6 @@ export const hostingService = {
   // Implementações futuras
 }
 
+// Arquivos de serviços criados mas não exportados ainda:
+// - ssl.ts (pronto para uso quando necessário)
+
