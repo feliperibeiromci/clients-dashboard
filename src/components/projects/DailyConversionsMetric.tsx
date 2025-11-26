@@ -30,7 +30,7 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
   logo,
 }) => {
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
+    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1 flex-1">
@@ -59,19 +59,19 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
         </button>
       </div>
 
-      {/* Bar chart */}
-      <div className="flex flex-col gap-2 h-[141px] p-2">
-        <div className="flex items-end justify-between gap-1 flex-1">
+      {/* Bar chart - ocupando espaço completo */}
+      <div className="flex flex-col gap-2 flex-1 p-2" style={{ minHeight: '140px' }}>
+        <div className="flex items-end justify-between gap-1.5 flex-1">
           {conversionData.map((item, index) => (
-            <div key={index} className="flex flex-col gap-1 flex-1 items-center">
-              <div className="flex flex-col gap-1 items-center justify-end flex-1 w-full">
+            <div key={index} className="flex flex-col gap-1.5 flex-1 items-center">
+              <div className="flex flex-col gap-1.5 items-center justify-end flex-1 w-full">
                 {/* Conversions bar */}
                 {item.conversions > 0 && (
                   <div
                     className="bg-[#FF3856] rounded-full w-full"
                     style={{
                       height: `${(item.conversions / maxValue) * 100}%`,
-                      minHeight: '8px',
+                      minHeight: '12px',
                     }}
                   />
                 )}
@@ -81,7 +81,7 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
                     className="bg-[#1500FE] rounded-full w-full"
                     style={{
                       height: `${(item.bounceRate / maxValue) * 100}%`,
-                      minHeight: '8px',
+                      minHeight: '12px',
                     }}
                   />
                 )}

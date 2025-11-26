@@ -28,7 +28,7 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
   const COLORS = ['#FF3856', '#2F3133']
 
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
+    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1 flex-1">
@@ -57,17 +57,17 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
         </button>
       </div>
 
-      {/* Donut chart */}
-      <div className="flex items-center gap-5 h-[141px] px-2 py-3">
-        <div className="relative w-20 h-20 shrink-0">
+      {/* Donut chart - ocupando espaço completo */}
+      <div className="flex items-center gap-6 flex-1 px-2 py-2" style={{ minHeight: '140px' }}>
+        <div className="relative w-28 h-28 shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={25}
-                outerRadius={40}
+                innerRadius={35}
+                outerRadius={56}
                 startAngle={90}
                 endAngle={-270}
                 dataKey="value"
@@ -78,15 +78,21 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
               </Pie>
             </PieChart>
           </ResponsiveContainer>
+          {/* Text inside donut chart */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xs font-normal leading-[15.6px] text-[#F1F2F3] tracking-[-0.24px] text-center">
+              {total.toLocaleString()}<br />Emails
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-0.5 flex-1">
+        <div className="flex flex-col gap-1 flex-1">
           <div className="flex items-center gap-1">
-            <span className="text-[32px] font-semibold leading-[38.4px] text-[#F1F2F3] tracking-[-0.64px]">
+            <span className="text-5xl font-semibold leading-[60px] text-[#F1F2F3] tracking-[-0.8px]">
               {percentage}%
             </span>
           </div>
-          <p className="text-xs font-normal leading-[15.6px] text-[#ABAEB3] tracking-[-0.24px]">
+          <p className="text-sm font-normal leading-[18.2px] text-[#ABAEB3] tracking-[-0.28px]">
             {opened.toLocaleString()} of {total.toLocaleString()} emails opened
           </p>
         </div>

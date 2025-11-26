@@ -1,5 +1,6 @@
 import React from 'react'
 import { ArrowUpRight, ChevronDown } from 'lucide-react'
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { ClientLogo } from './ClientLogo'
 
 interface SiteSpeedMetricProps {
@@ -18,14 +19,22 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
   status,
 }) => {
 
-  // Calcular comprimento do arco para o gauge semicircular
-  const radius = 110
-  const circumference = Math.PI * radius // Comprimento do semicírculo
-  const progress = value / 100 // Progresso de 0 a 1
-  const arcLength = circumference * progress
+  // Dados para o gauge semicircular usando Recharts
+  const gaugeData = [
+    { name: 'Progress', value: value },
+    { name: 'Remaining', value: 100 - value },
+  ]
+  
+  const COLORS = ['#FF3856', '#2F3133']
 
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square min-w-0 overflow-visible">
+    <div 
+      className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4 min-w-0 overflow-visible-card" 
+      style={{ 
+        overflow: 'visible',
+        isolation: 'auto',
+      }}
+    >
       {/* Header */}
       <div className="flex items-start justify-between min-w-0">
         <div className="flex flex-col gap-1 flex-1 min-w-0">
@@ -45,7 +54,7 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
       </div>
 
       {/* Metric title and dropdown */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3" style={{ marginBottom: '-20px' }}>
         <h4 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px]">
           Site Speed
         </h4>
@@ -54,89 +63,76 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
         </button>
       </div>
 
-      {/* Gauge semicircular chart - conforme design Figma */}
-      <div className="relative h-[141px] w-full flex items-center justify-center overflow-hidden">
-        {/* Background semicircle (track) - dark gray */}
-        <svg 
-          viewBox="0 0 261 141" 
-          className="absolute left-1/2 top-0 -translate-x-1/2"
-          style={{ 
-            width: '261px',
-            height: '141px',
-            maxWidth: '100%',
-            aspectRatio: '261 / 141',
-          }}
-          preserveAspectRatio="xMidYMin meet"
-        >
-          <path
-            d="M 20.5 31 A 110 110 0 0 1 240.5 31"
-            fill="none"
-            stroke="#2F3133"
-            strokeWidth="20"
-            strokeLinecap="round"
-          />
-        </svg>
-        
-        {/* Progress semicircle - red with glow */}
-        <svg 
-          viewBox="0 0 261 141" 
-          className="absolute left-1/2 top-0 -translate-x-1/2"
-          style={{ 
-            width: '261px',
-            height: '141px',
-            maxWidth: '100%',
-            aspectRatio: '261 / 141',
-          }}
-          preserveAspectRatio="xMidYMin meet"
-        >
-          <defs>
-            <filter id={`gaugeGlow-${value}`} x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
-              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 0.07 0.13 0 0  0 0 0.33 0 0  0 0 0 0.8 0" result="glow"/>
-              <feBlend in="SourceGraphic" in2="glow" mode="normal"/>
-            </filter>
-          </defs>
-          <path
-            d="M 20.5 31 A 110 110 0 0 1 240.5 31"
-            fill="none"
-            stroke="#FF3856"
-            strokeWidth="20"
-            strokeLinecap="round"
-            strokeDasharray={`${arcLength} ${circumference}`}
-            strokeDashoffset={0}
-            style={{
-              filter: `url(#gaugeGlow-${value})`,
-            }}
-          />
-        </svg>
-        
-        {/* Value text centered in the semicircle */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10" style={{ marginTop: '-10px' }}>
-          <span 
-            className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]" 
-            style={{ fontFamily: 'Jost, sans-serif', fontWeight: 600 }}
-          >
-            {value}
-          </span>
-        </div>
-        
-        {/* Status badge at bottom */}
-        <div className="absolute bottom-[12px] left-1/2 -translate-x-1/2 flex items-center z-10">
-          <span 
-            className="text-base font-normal leading-[20.8px] text-[#F1F2F3] tracking-[-0.32px]" 
-            style={{ fontFamily: 'Jost, sans-serif' }}
-          >
-            Site is
-          </span>
-          <div className="relative ml-0.5 px-1 py-0 rounded-md border border-[#45C347] bg-[#45C347]/10">
+      {/* Gauge semicircular chart - design do Figma */}
+      <div className="flex flex-col items-center w-full flex-1 justify-start" style={{ paddingTop: '0px', paddingBottom: '20px', minHeight: '0', marginTop: '-4px' }}>
+        {/* Container único com gauge e texto */}
+        <div className="flex flex-col items-center justify-center w-full relative" style={{ zIndex: 10, gap: '8px' }}>
+          {/* Gauge semicircular usando Recharts - ocupando mais espaço */}
+          <div className="w-full flex justify-center" style={{ marginBottom: '-70px', height: '200px', maxWidth: '100%', paddingLeft: '0px', paddingRight: '0px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                  <filter id={`gaugeGlow-${value}`} x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 0.07 0.13 0 0  0 0 0.33 0 0  0 0 0 0.9 0" result="glow"/>
+                    <feBlend in="SourceGraphic" in2="glow" mode="normal"/>
+                  </filter>
+                </defs>
+                <Pie
+                  data={gaugeData}
+                  cx="50%"
+                  cy="100%"
+                  startAngle={180}
+                  endAngle={0}
+                  innerRadius={95}
+                  outerRadius={130}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {gaugeData.map((_, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]}
+                      style={index === 0 ? { filter: `url(#gaugeGlow-${value})` } : {}}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          
+          {/* Value text centered - posicionado dentro do espaço do semicírculo, sem compressão */}
+          <div className="flex items-center justify-center" style={{ marginTop: '-32px', marginBottom: '4px' }}>
             <span 
-              className="relative text-base font-normal leading-[20.8px] text-[#ECF9ED] tracking-[-0.32px] z-[4]" 
+              style={{ 
+                fontFamily: 'Jost, sans-serif', 
+                fontSize: '40px',
+                fontWeight: 600,
+                lineHeight: '48px',
+                letterSpacing: '-0.8px',
+                color: '#F1F2F3'
+              }}
+            >
+              {value}
+            </span>
+          </div>
+          
+          {/* Status badge - posicionado abaixo do número */}
+          <div className="flex items-center gap-1.5">
+            <span 
+              className="text-base font-normal leading-[20.8px] text-[#F1F2F3] tracking-[-0.32px]" 
               style={{ fontFamily: 'Jost, sans-serif' }}
             >
-              {status}
+              Site is
             </span>
-            <div className="absolute inset-0 border border-[#45C347] rounded-md z-[2]" />
-            <div className="absolute inset-0 bg-[#45C347] opacity-10 rounded-md z-[1]" />
+            <div className="px-2.5 py-0.5 rounded-md border border-[#45C347] bg-[#45C347]/10">
+              <span 
+                className="text-base font-normal leading-[20.8px] text-[#ECF9ED] tracking-[-0.32px]" 
+                style={{ fontFamily: 'Jost, sans-serif' }}
+              >
+                {status}
+              </span>
+            </div>
           </div>
         </div>
       </div>

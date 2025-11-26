@@ -35,3 +35,9 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Permitir overflow visible em cards com rounded corners */
+.overflow-visible-card {
+  overflow: visible !important;
+  clip-path: none !important;
+}

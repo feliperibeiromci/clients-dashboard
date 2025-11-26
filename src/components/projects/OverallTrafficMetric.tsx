@@ -30,7 +30,7 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
   trend,
 }) => {
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
+    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1 flex-1">
@@ -59,30 +59,30 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
         </button>
       </div>
 
-      {/* Line chart with area */}
-      <div className="relative h-[141px] w-full">
+      {/* Line chart with area - ocupando espaço completo */}
+      <div className="relative flex-1 w-full" style={{ minHeight: '140px' }}>
         {/* Trend indicator */}
-        <div className="absolute left-4 top-2.5 flex items-center gap-2 z-10">
+        <div className="absolute left-4 top-4 flex items-center gap-2.5 z-10">
           <div className="relative">
-            <div className="w-5 h-5 border border-[#45C347] bg-[#45C347]/10 rounded flex items-center justify-center">
-              <ArrowUp size={20} className="text-[#45C347]" />
+            <div className="w-6 h-6 border border-[#45C347] bg-[#45C347]/10 rounded flex items-center justify-center">
+              <ArrowUp size={22} className="text-[#45C347]" />
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]">
+            <span className="text-5xl font-semibold leading-[60px] text-[#F1F2F3] tracking-[-0.8px]">
               {value}
             </span>
-            <span className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]">
+            <span className="text-5xl font-semibold leading-[60px] text-[#F1F2F3] tracking-[-0.8px]">
               %
             </span>
           </div>
         </div>
 
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={trafficData} margin={{ top: 20, right: 0, bottom: 0, left: 0 }}>
+          <AreaChart data={trafficData} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
             <defs>
               <linearGradient id="trafficGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#FF3856" stopOpacity={0.2} />
+                <stop offset="5%" stopColor="#FF3856" stopOpacity={0.3} />
                 <stop offset="95%" stopColor="#FF3856" stopOpacity={0} />
               </linearGradient>
             </defs>
@@ -90,7 +90,7 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
               type="monotone"
               dataKey="value"
               stroke="#FF3856"
-              strokeWidth={2}
+              strokeWidth={3}
               fill="url(#trafficGradient)"
             />
             <XAxis dataKey="name" hide />
