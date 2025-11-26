@@ -7,26 +7,33 @@ interface ProjectCardProps {
   company: string
   logo: string
   isHovered?: boolean
+  onClick?: () => void
+  isSelected?: boolean
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ name, company, logo, isHovered = false }) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ name, company, logo, isHovered = false, onClick, isSelected = false }) => {
   const [isLocalHovered, setIsLocalHovered] = useState(false)
   const hovered = isHovered || isLocalHovered
+  
+  // If selected, we want it to look active/highlighted similar to hover but maybe distinctive
+  const active = hovered || isSelected
 
   return (
     <div 
       className={`
         border rounded-xl p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-300 relative group overflow-hidden
-        ${hovered 
+        ${active 
           ? 'border-[#45484D] bg-[#2F3133]/50' 
           : 'border-[#2F3133] hover:border-[#45484D] hover:bg-[#2F3133]/30'
         }
+        ${isSelected ? 'ring-1 ring-[#FF3856]/50' : ''} 
       `}
       onMouseEnter={() => setIsLocalHovered(true)}
       onMouseLeave={() => setIsLocalHovered(false)}
+      onClick={onClick}
     >
       {/* Hover gradient background effect */}
-      {hovered && (
+      {active && (
         <div className="absolute inset-0 bg-gradient-to-br from-[#2F3133]/80 to-[#17181A]/80 opacity-50 transition-opacity duration-300" />
       )}
 
@@ -34,7 +41,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ name, company, logo, i
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <h3 className={`
             text-2xl font-semibold leading-[28.8px] tracking-[-0.48px] transition-colors duration-300 truncate
-            ${hovered ? 'text-[#F1F2F3]' : 'text-[#747980] group-hover:text-[#F1F2F3]'}
+            ${active ? 'text-[#F1F2F3]' : 'text-[#747980] group-hover:text-[#F1F2F3]'}
           `}>
             {name}
           </h3>
@@ -44,7 +51,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ name, company, logo, i
             </div>
             <span className={`
               text-lg font-semibold leading-[21.6px] tracking-[-0.36px] transition-colors duration-300 truncate
-              ${hovered ? 'text-[#ABAEB3]' : 'text-[#5D6166] group-hover:text-[#ABAEB3]'}
+              ${active ? 'text-[#ABAEB3]' : 'text-[#5D6166] group-hover:text-[#ABAEB3]'}
             `}>
               {company}
             </span>
@@ -54,8 +61,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ name, company, logo, i
         <button 
           className={`
             shrink-0 p-2 rounded-full transition-all duration-300 relative z-10
-            ${hovered 
-              ? 'bg-[#414141] hover:bg-[#4A4A4A]' 
+            ${active 
+              ? 'bg-[#414141] hover:bg-[#4A4A4A] opacity-100' 
               : 'bg-[#2F3133] hover:bg-[#414141] opacity-0 group-hover:opacity-100'
             }
           `}
@@ -66,4 +73,3 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ name, company, logo, i
     </div>
   )
 }
-

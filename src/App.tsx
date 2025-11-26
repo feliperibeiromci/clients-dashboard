@@ -8,18 +8,19 @@ import { SessionsChart } from './components/SessionsChart'
 import { OtherProjects } from './components/OtherProjects'
 import { SEOTermsTable } from './components/SEOTermsTable'
 import { ClientsPage } from './components/ClientsPage'
+import { UsersPage } from './components/UsersPage'
 import { ProjectsPage } from './components/ProjectsPage'
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth()
 
   if (loading) {
-        return (
+    return (
       <div className="min-h-screen bg-[#0b0c0d] flex items-center justify-center text-white">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#FF3856]"></div>
-          </div>
-        )
-    }
+      </div>
+    )
+  }
 
   if (!user) {
     return <Navigate to="/login" />
@@ -91,20 +92,20 @@ function App() {
               </ProtectedLayout>
             }
           />
+          <Route
+            path="/users"
+            element={
+              <ProtectedLayout>
+                <UsersPage />
+              </ProtectedLayout>
+            }
+          />
           {/* Placeholder routes for now */}
           <Route
             path="/reports"
             element={
               <ProtectedLayout>
                 <div className="text-center py-10 text-gray-500">Reports Page (Coming Soon)</div>
-              </ProtectedLayout>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <ProtectedLayout>
-                <div className="text-center py-10 text-gray-500">Users Page (Coming Soon)</div>
               </ProtectedLayout>
             }
           />
