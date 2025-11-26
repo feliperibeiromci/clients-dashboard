@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface ClientLogoProps {
-  logo: string
+  logo: string | null | undefined
   size?: number
   className?: string
 }
@@ -51,12 +51,18 @@ export const ClientLogo: React.FC<ClientLogoProps> = ({ logo, size = 20, classNa
     ),
   }
 
+  // Safe logo handling: if logo is null/undefined or not found, show placeholder
+  const logoKey = logo ? logo.toLowerCase() : '';
+  const LogoComponent = logos[logoKey];
+
   return (
     <div className={`w-${size} h-${size} ${className}`} style={{ width: size, height: size }}>
-      {logos[logo.toLowerCase()] || (
-        <div className="w-full h-full bg-[#ABAEB3] rounded" />
+      {LogoComponent || (
+        <div className="w-full h-full bg-[#2F3133] rounded flex items-center justify-center text-[10px] text-[#ABAEB3] font-bold">
+          {/* Fallback content (e.g. initials) */}
+          ?
+        </div>
       )}
     </div>
   )
 }
-

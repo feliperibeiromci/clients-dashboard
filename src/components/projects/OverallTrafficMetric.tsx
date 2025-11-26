@@ -1,6 +1,6 @@
-import React from 'react'
-import { ArrowUpRight, ChevronDown, ArrowUp } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import React, { useMemo } from 'react'
+import { ArrowUpRight, ChevronDown, ArrowUp, ArrowDown } from 'lucide-react'
+import { AreaChart, Area, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { ClientLogo } from './ClientLogo'
 
 interface OverallTrafficMetricProps {
@@ -9,18 +9,8 @@ interface OverallTrafficMetricProps {
   logo: string
   value: number // percentage
   trend: 'up' | 'down'
+  data?: { name: string; value: number }[]
 }
-
-// Dados mockados - serão dinâmicos depois
-const trafficData = [
-  { name: '1', value: 85 },
-  { name: '2', value: 88 },
-  { name: '3', value: 90 },
-  { name: '4', value: 92 },
-  { name: '5', value: 94 },
-  { name: '6', value: 95 },
-  { name: '7', value: 95 },
-]
 
 export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
   projectName,
@@ -28,9 +18,49 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
   logo,
   value,
   trend,
+  data
 }) => {
+  // Generate dynamic data if not provided
+  const chartData = useMemo(() => {
+    if (data) return data;
+    
+    // Generate 7 points ending with the current value
+    // Create a curve that matches the trend
+    const points = [];
+    let currentValue = value;
+    
+    for (let i = 6; i >= 0; i--) {
+      points.unshift({
+        name: i.toString(),
+        value: currentValue
+      });
+      
+      // Generate previous points based on trend
+      // If trend is UP, previous points should be lower
+      // If trend is DOWN, previous points should be higher
+      const variation = Math.random() * 5 + 1; // Random change between 1-6%
+      if (trend === 'up') {
+        currentValue -= variation;
+      } else {
+        currentValue += variation;
+      }
+      
+      // Keep within logical bounds (0-100)
+      currentValue = Math.max(0, Math.min(100, currentValue));
+    }
+    
+    return points;
+  }, [value, trend, data]);
+
+  const isPositive = trend === 'up';
+  const trendColor = isPositive ? '#45C347' : '#FF3856';
+  const TrendIcon = isPositive ? ArrowUp : ArrowDown;
+
+  // Create a safe ID for the gradient
+  const gradientId = `trafficGradient-${projectName.replace(/\s+/g, '-')}`;
+
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4">
+    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1 flex-1">
@@ -59,42 +89,44 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
         </button>
       </div>
 
-      {/* Line chart with area - ocupando espaço completo */}
-      <div className="relative flex-1 w-full" style={{ minHeight: '140px' }}>
+      {/* Line chart with area */}
+      <div className="relative h-[141px] w-full">
         {/* Trend indicator */}
-        <div className="absolute left-4 top-4 flex items-center gap-2.5 z-10">
+        <div className="absolute left-4 top-2.5 flex items-center gap-2 z-10">
           <div className="relative">
-            <div className="w-6 h-6 border border-[#45C347] bg-[#45C347]/10 rounded flex items-center justify-center">
-              <ArrowUp size={22} className="text-[#45C347]" />
+            <div 
+              className="w-5 h-5 border bg-opacity-10 rounded flex items-center justify-center"
+              style={{ borderColor: trendColor, backgroundColor: `${trendColor}1A` }}
+            >
+              <TrendIcon size={20} style={{ color: trendColor }} />
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-5xl font-semibold leading-[60px] text-[#F1F2F3] tracking-[-0.8px]">
+            <span className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]">
               {value}
             </span>
-            <span className="text-5xl font-semibold leading-[60px] text-[#F1F2F3] tracking-[-0.8px]">
+            <span className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]">
               %
             </span>
           </div>
         </div>
-
+        
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={trafficData} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+          <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <defs>
-              <linearGradient id="trafficGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#FF3856" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#FF3856" stopOpacity={0} />
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={trendColor} stopOpacity={0.2} />
+                <stop offset="95%" stopColor={trendColor} stopOpacity={0} />
               </linearGradient>
             </defs>
+            <YAxis hide domain={['dataMin - 5', 'dataMax + 5']} />
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#FF3856"
-              strokeWidth={3}
-              fill="url(#trafficGradient)"
+              stroke={trendColor}
+              strokeWidth={2}
+              fill={`url(#${gradientId})`}
             />
-            <XAxis dataKey="name" hide />
-            <YAxis hide />
             <Tooltip
               contentStyle={{
                 backgroundColor: '#17181A',
@@ -102,7 +134,9 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
                 borderRadius: '8px',
                 color: '#F1F2F3',
               }}
+              itemStyle={{ color: trendColor }}
               labelStyle={{ color: '#ABAEB3' }}
+              formatter={(value: number) => [`${value.toFixed(0)}%`, 'Traffic']}
             />
           </AreaChart>
         </ResponsiveContainer>
@@ -110,4 +144,3 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
     </div>
   )
 }
-

@@ -1,16 +1,17 @@
 import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import { Logo } from './Logo'
 
 interface NavItem {
   label: string
   icon: React.ReactNode
   id: string
+  path: string
 }
 
-interface SidebarProps {
-  activeItem?: string
-  onNavigate?: (id: string) => void
-}
+// removed unused SidebarProps since we use router now
+interface SidebarProps {}
 
 const HomeIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -69,18 +70,29 @@ const SettingsIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 )
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeItem = 'home', onNavigate }) => {
+export const Sidebar: React.FC<SidebarProps> = () => {
+  const { signOut, user, isAdmin } = useAuth()
+  const location = useLocation()
+  const activeItem = location.pathname
+
   const primaryNavItems: NavItem[] = [
-    { id: 'home', label: 'Home', icon: <HomeIcon className="w-6 h-6" /> },
-    { id: 'projects', label: 'Projects', icon: <ProjectsIcon className="w-6 h-6" /> },
-    { id: 'clients', label: 'Clients', icon: <ClientsIcon className="w-6 h-6" /> },
-    { id: 'reports', label: 'Reports', icon: <ReportsIcon className="w-6 h-6" /> },
+    { id: 'home', label: 'Home', icon: <HomeIcon className="w-6 h-6" />, path: '/' },
+    { id: 'projects', label: 'Projects', icon: <ProjectsIcon className="w-6 h-6" />, path: '/projects' },
   ]
 
-  const secondaryNavItems: NavItem[] = [
-    { id: 'users', label: 'Users', icon: <UsersIcon className="w-6 h-6" /> },
-    { id: 'settings', label: 'Settings', icon: <SettingsIcon className="w-6 h-6" /> },
-  ]
+  if (isAdmin) {
+    primaryNavItems.push({ id: 'clients', label: 'Clients', icon: <ClientsIcon className="w-6 h-6" />, path: '/clients' })
+  }
+  
+  primaryNavItems.push({ id: 'reports', label: 'Reports', icon: <ReportsIcon className="w-6 h-6" />, path: '/reports' })
+
+  const secondaryNavItems: NavItem[] = []
+  
+  if (isAdmin) {
+    secondaryNavItems.push({ id: 'users', label: 'Users', icon: <UsersIcon className="w-6 h-6" />, path: '/users' })
+  }
+  
+  secondaryNavItems.push({ id: 'settings', label: 'Settings', icon: <SettingsIcon className="w-6 h-6" />, path: '/settings' })
 
   const handleNavigation = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
@@ -89,14 +101,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeItem = 'home', onNavigat
     }
   }
 
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
+
   const renderNavItem = (item: NavItem) => {
-    const isActive = activeItem === item.id;
+    // Check if current path starts with item path (for nested routes) or is exact match
+    // Special case for home '/' to avoid matching everything
+    const isActive = item.path === '/' 
+      ? activeItem === '/' 
+      : activeItem.startsWith(item.path);
 
     return (
       <li key={item.id}>
-        <a
-          href="#"
-          onClick={(e) => handleNavigation(e, item.id)}
+        <Link
+          to={item.path}
           className={`
             relative flex items-center gap-2.5 px-3 py-4 rounded-lg transition-all duration-500 ease-in-out group isolate
             ${isActive
@@ -135,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeItem = 'home', onNavigat
 
           <span className="relative z-10">{item.icon}</span>
           <span className="relative z-10 font-medium text-xl leading-[24px] tracking-[-0.4px]">{item.label}</span>
-        </a>
+        </Link>
       </li>
     )
   }
@@ -178,11 +201,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeItem = 'home', onNavigat
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[#F1F2F3] font-medium text-lg leading-[21.6px] tracking-[-0.36px] truncate">Michele Heron</p>
-              <p className="text-[#ABAEB3] font-medium text-sm leading-[18.2px] tracking-[-0.28px] truncate">Admin</p>
+              <p className="text-[#F1F2F3] font-medium text-lg leading-[21.6px] tracking-[-0.36px] truncate">
+                {user?.email?.split('@')[0] || 'User'}
+              </p>
+              <p className="text-[#ABAEB3] font-medium text-sm leading-[18.2px] tracking-[-0.28px] truncate">
+                {isAdmin ? 'Admin' : 'Client'}
+              </p>
             </div>
             <button 
-              className="text-[#ABAEB3] hover:text-white transition-colors flex-shrink-0"
+              onClick={handleSignOut}
+              className="text-[#ABAEB3] hover:text-white transition-colors flex-shrink-0 cursor-pointer"
+              title="Sign out"
               onMouseEnter={(e) => {
                 const icon = e.currentTarget.querySelector('i');
                 if (icon) icon.style.color = '#ffffff';

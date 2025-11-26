@@ -1,6 +1,5 @@
 import React from 'react'
 import { ArrowUpRight, ChevronDown } from 'lucide-react'
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { ClientLogo } from './ClientLogo'
 
 interface EmailOpenRateMetricProps {
@@ -20,15 +19,15 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
   opened,
   total,
 }) => {
-  const data = [
-    { name: 'Opened', value: percentage },
-    { name: 'Not Opened', value: 100 - percentage },
-  ]
-
-  const COLORS = ['#FF3856', '#2F3133']
+  // Cálculos para o gráfico SVG
+  const radius = 42
+  const strokeWidth = 8
+  const normalizedRadius = radius - strokeWidth / 2
+  const circumference = normalizedRadius * 2 * Math.PI
+  const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4">
+    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1 flex-1">
@@ -57,42 +56,64 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
         </button>
       </div>
 
-      {/* Donut chart - ocupando espaço completo */}
-      <div className="flex items-center gap-6 flex-1 px-2 py-2" style={{ minHeight: '140px' }}>
-        <div className="relative w-28 h-28 shrink-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={35}
-                outerRadius={56}
-                startAngle={90}
-                endAngle={-270}
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          {/* Text inside donut chart */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs font-normal leading-[15.6px] text-[#F1F2F3] tracking-[-0.24px] text-center">
-              {total.toLocaleString()}<br />Emails
+      {/* Content with Chart and Stats */}
+      <div className="flex items-center gap-4 h-[141px]">
+        {/* SVG Donut Chart */}
+        <div className="relative w-[110px] h-[110px] shrink-0 flex items-center justify-center">
+          <svg
+            height="110"
+            width="110"
+            className="transform -rotate-90 scale-y-[-1] overflow-visible"
+          >
+            <defs>
+              <filter id={`glow-${projectName}`} x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            {/* Background Circle */}
+            <circle
+              stroke="#2F3133"
+              strokeWidth={strokeWidth}
+              fill="transparent"
+              r={normalizedRadius}
+              cx="55"
+              cy="55"
+            />
+            {/* Progress Circle */}
+            <circle
+              stroke="#FF3856"
+              strokeWidth={strokeWidth}
+              strokeDasharray={`${circumference} ${circumference}`}
+              style={{ strokeDashoffset, filter: `url(#glow-${projectName})` }}
+              strokeLinecap="round"
+              fill="transparent"
+              r={normalizedRadius}
+              cx="55"
+              cy="55"
+            />
+          </svg>
+          
+          {/* Text inside circle */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="text-lg font-bold text-white leading-tight">
+              {total.toLocaleString()}
+            </span>
+            <span className="text-[10px] text-[#ABAEB3] font-medium">
+              Emails
             </span>
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 flex-1">
-          <div className="flex items-center gap-1">
-            <span className="text-5xl font-semibold leading-[60px] text-[#F1F2F3] tracking-[-0.8px]">
-              {percentage}%
-            </span>
-          </div>
-          <p className="text-sm font-normal leading-[18.2px] text-[#ABAEB3] tracking-[-0.28px]">
+        {/* Stats Text */}
+        <div className="flex flex-col">
+          <span className="text-5xl font-semibold text-[#F1F2F3] tracking-[-1px]">
+            {percentage}%
+          </span>
+          <p className="text-xs text-[#ABAEB3] mt-1">
             {opened.toLocaleString()} of {total.toLocaleString()} emails opened
           </p>
         </div>
@@ -100,4 +121,3 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
     </div>
   )
 }
-

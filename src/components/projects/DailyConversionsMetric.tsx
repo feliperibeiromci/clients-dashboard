@@ -8,18 +8,18 @@ interface DailyConversionsMetricProps {
   logo: string
 }
 
-// Dados mockados - serão dinâmicos depois
+// Dados mockados - exatamente como na imagem
 const conversionData = [
-  { conversions: 19, bounceRate: 12 },
-  { conversions: 25, bounceRate: 16 },
-  { conversions: 10, bounceRate: 8 },
-  { conversions: 18, bounceRate: 0 },
-  { conversions: 41, bounceRate: 0 },
-  { conversions: 36, bounceRate: 0 },
-  { conversions: 44, bounceRate: 8 },
-  { conversions: 50, bounceRate: 12 },
-  { conversions: 53, bounceRate: 8 },
-  { conversions: 60, bounceRate: 12 },
+  { conversions: 20, bounceRate: 18 },
+  { conversions: 30, bounceRate: 15 },
+  { conversions: 15, bounceRate: 12 },
+  { conversions: 25, bounceRate: 0 },
+  { conversions: 45, bounceRate: 0 },
+  { conversions: 40, bounceRate: 0 },
+  { conversions: 55, bounceRate: 0 },
+  { conversions: 50, bounceRate: 0 },
+  { conversions: 60, bounceRate: 8 },
+  { conversions: 70, bounceRate: 8 },
 ]
 
 const maxValue = Math.max(...conversionData.map(d => d.conversions))
@@ -30,7 +30,7 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
   logo,
 }) => {
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-4">
+    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1 flex-1">
@@ -59,48 +59,48 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
         </button>
       </div>
 
-      {/* Bar chart - ocupando espaço completo */}
-      <div className="flex flex-col gap-2 flex-1 p-2" style={{ minHeight: '140px' }}>
-        <div className="flex items-end justify-between gap-1.5 flex-1">
+      {/* Bar chart */}
+      <div className="flex flex-col gap-2 h-[141px] py-2">
+        <div className="flex items-end justify-between gap-3 flex-1 px-2">
           {conversionData.map((item, index) => (
-            <div key={index} className="flex flex-col gap-1.5 flex-1 items-center">
-              <div className="flex flex-col gap-1.5 items-center justify-end flex-1 w-full">
-                {/* Conversions bar */}
-                {item.conversions > 0 && (
-                  <div
-                    className="bg-[#FF3856] rounded-full w-full"
-                    style={{
-                      height: `${(item.conversions / maxValue) * 100}%`,
-                      minHeight: '12px',
-                    }}
-                  />
-                )}
-                {/* Bounce Rate bar */}
-                {item.bounceRate > 0 && (
-                  <div
-                    className="bg-[#1500FE] rounded-full w-full"
-                    style={{
-                      height: `${(item.bounceRate / maxValue) * 100}%`,
-                      minHeight: '12px',
-                    }}
-                  />
-                )}
-              </div>
+            <div key={index} className="flex flex-col gap-2 flex-1 items-center justify-end h-full">
+              {/* Conversions bar (Red) */}
+              <div
+                className="bg-[#FF3856] rounded-full w-2.5"
+                style={{
+                  height: `${(item.conversions / maxValue) * 70}%`,
+                  minHeight: '8px',
+                }}
+              />
+              {/* Bounce Rate bar (Blue) */}
+              {item.bounceRate > 0 && (
+                <div
+                  className="bg-[#1500FE] rounded-full w-2.5"
+                  style={{
+                    height: `${(item.bounceRate / maxValue) * 70}%`,
+                    minHeight: '8px',
+                  }}
+                />
+              )}
+              {/* Spacer for alignment when no bounce rate */}
+              {item.bounceRate === 0 && (
+                <div className="w-2.5 h-2" /> // Altura fixa de 8px para manter alinhamento
+              )}
             </div>
           ))}
         </div>
         
         {/* Legend */}
-        <div className="flex items-center justify-center gap-5 mt-2">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 bg-[#FF3856] rounded-sm" />
-            <span className="text-sm leading-[18.2px] text-[#ABAEB3] tracking-[-0.28px]">
+        <div className="flex items-center justify-center gap-6 mt-auto">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#FF3856] rounded-[4px]" />
+            <span className="text-[13px] leading-none text-[#ABAEB3] tracking-[-0.26px] font-medium">
               Conversions
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 bg-[#1500FE] rounded-sm" />
-            <span className="text-sm leading-[18.2px] text-[#ABAEB3] tracking-[-0.28px]">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#1500FE] rounded-[4px]" />
+            <span className="text-[13px] leading-none text-[#ABAEB3] tracking-[-0.26px] font-medium">
               Bounce Rate
             </span>
           </div>
@@ -109,4 +109,3 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
     </div>
   )
 }
-

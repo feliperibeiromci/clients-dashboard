@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { ArrowUpRight, ChevronDown, Plus } from 'lucide-react'
+import { ArrowUpRight, Plus } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 import { SiteSpeedMetric } from './projects/SiteSpeedMetric'
 import { OverallTrafficMetric } from './projects/OverallTrafficMetric'
 import { EmailOpenRateMetric } from './projects/EmailOpenRateMetric'
 import { DailyConversionsMetric } from './projects/DailyConversionsMetric'
 import { ProjectCard } from './projects/ProjectCard'
 import { ClientFilter } from './projects/ClientFilter'
+import { CreateClientModal } from './clients/CreateClientModal'
 
 // Dados mockados dos projetos - serão dinâmicos depois
 const mockProjects = [
@@ -24,11 +26,24 @@ const mockProjects = [
 ]
 
 export const ProjectsPage: React.FC = () => {
+  const { isAdmin } = useAuth()
   const [selectedClient, setSelectedClient] = useState<string>('all')
+  const [isCreateClientModalOpen, setIsCreateClientModalOpen] = useState(false)
+
+  // Filter projects based on role
+  const filteredProjects = mockProjects.filter(project => {
+    if (isAdmin) {
+      return selectedClient === 'all' || project.company.toLowerCase() === selectedClient
+    }
+    // For demo purposes, clients only see Renault projects
+    // In production, this would filter by profile.client_id
+    return project.company === 'Renault'
+  })
 
   return (
     <div className="flex flex-col gap-5 w-full">
-      {/* Top row - 4 metric cards */}
+      {/* Top row - 4 metric cards - Only show for Admin or if related to client */}
+      {isAdmin && (
       <div className="grid grid-cols-4 gap-5">
         <SiteSpeedMetric 
           projectName="Clio Marketing"
@@ -58,6 +73,21 @@ export const ProjectsPage: React.FC = () => {
           logo="hyundai"
         />
       </div>
+      )}
+
+      {/* For client, maybe show only their metrics? For now, hiding metrics if not admin or showing relevant ones would be better */}
+      {!isAdmin && (
+        <div className="grid grid-cols-4 gap-5">
+           <SiteSpeedMetric 
+            projectName="Clio Marketing"
+            companyName="Renault"
+            logo="renault"
+            value={95}
+            status="Healthy"
+          />
+          {/* Add placeholders or other metrics relevant to the client */}
+        </div>
+      )}
 
       {/* All Your Projects section */}
       <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5">
@@ -65,8 +95,9 @@ export const ProjectsPage: React.FC = () => {
         <div className="flex items-center justify-between w-full">
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px]">
-              All Your Projects
+              {isAdmin ? 'All Projects' : 'Your Projects'}
             </h2>
+            {isAdmin && (
             <div className="flex items-center gap-1.5">
               <div className="w-5 h-5 relative">
                 <img src="/src/assets/images/logo.png" alt="MCI" className="w-full h-full object-contain" />
@@ -75,6 +106,7 @@ export const ProjectsPage: React.FC = () => {
                 MCI Group
               </span>
             </div>
+            )}
           </div>
           
           <div className="flex items-center gap-2">
@@ -82,19 +114,26 @@ export const ProjectsPage: React.FC = () => {
               <span className="text-xs font-medium leading-[15.6px] tracking-[-0.24px]">See Full List</span>
               <ArrowUpRight size={16} />
             </button>
-            <button className="bg-[#FF3856] hover:bg-[#FF3856]/90 text-white px-3 py-2 rounded-full flex items-center gap-1.5 transition-colors">
+            {isAdmin && (
+              <button 
+                onClick={() => setIsCreateClientModalOpen(true)}
+                className="bg-[#FF3856] hover:bg-[#FF3856]/90 text-white px-3 py-2 rounded-full flex items-center gap-1.5 transition-colors"
+              >
               <span className="text-xs font-medium leading-[15.6px] tracking-[-0.24px]">Create a New Project</span>
               <Plus size={16} />
             </button>
+            )}
           </div>
         </div>
 
-        {/* Client filters */}
+        {/* Client filters - Only for Admin */}
+        {isAdmin && (
         <ClientFilter selectedClient={selectedClient} onSelectClient={setSelectedClient} />
+        )}
 
         {/* Projects grid */}
         <div className="grid grid-cols-4 gap-5">
-          {mockProjects.map((project) => (
+          {filteredProjects.map((project) => (
             <ProjectCard
               key={project.id}
               name={project.name}
@@ -102,9 +141,23 @@ export const ProjectsPage: React.FC = () => {
               logo={project.logo}
             />
           ))}
+          {filteredProjects.length === 0 && (
+            <div className="col-span-4 text-center py-10 text-gray-500">
+              No projects found.
+            </div>
+          )}
         </div>
       </div>
+
+      <CreateClientModal 
+        isOpen={isCreateClientModalOpen}
+        onClose={() => setIsCreateClientModalOpen(false)}
+        onSuccess={() => {
+          // Aqui poderíamos recarregar a lista de clientes se estivesse sendo usada aqui
+          // Como o filtro é estático por enquanto, não precisamos fazer nada
+          setIsCreateClientModalOpen(false)
+        }}
+      />
     </div>
   )
 }
-
