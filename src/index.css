@@ -5,7 +5,7 @@
 @layer base {
   body {
     @apply bg-[#0b0c0d] text-white antialiased;
-    font-family: 'Inter', sans-serif; /* Assumindo Inter ou similar */
+    font-family: 'Jost', sans-serif;
   }
 }
 
@@ -40,4 +40,51 @@
 .overflow-visible-card {
   overflow: visible !important;
   clip-path: none !important;
+}
+
+/* Animation delays */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+/* Smooth fade-in animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-top-2 {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.slide-in-from-top-2 {
+  animation: slide-in-from-top-2 0.3s ease-out;
 }

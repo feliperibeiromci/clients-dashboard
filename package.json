@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "create-account": "node scripts/create-account.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.83.0",
@@ -15,6 +16,7 @@
     "lucide-react": "^0.554.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.28.0",
     "recharts": "^3.4.1",
     "remixicon": "^4.7.0",
     "tailwind-merge": "^3.4.0"
@@ -24,6 +26,7 @@
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.22",
     "eslint": "^9.39.1",
