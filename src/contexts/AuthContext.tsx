@@ -27,6 +27,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const fetchingProfileRef = React.useRef<Set<string>>(new Set()) // Track ongoing fetches
+
+  const fetchProfile = React.useCallback(async (userId: string, retryCount = 0) => {
+    // Prevent multiple simultaneous fetches for the same user
+    if (fetchingProfileRef.current.has(userId) && retryCount === 0) {
+      return
+    }
+
+    if (retryCount === 0) {
+      fetchingProfileRef.current.add(userId)
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (error) {
+        // If profile doesn't exist yet (PGRST116), it might still be creating
+        // Retry only once after a delay, then give up
+        if (error.code === 'PGRST116' && retryCount === 0) {
+          console.log('Profile not found yet, retrying once after delay...')
+          // Retry only once after a short delay (trigger might still be running)
+          setTimeout(() => {
+            fetchProfile(userId, 1) // Pass retryCount = 1 to prevent further retries
+          }, 2000) // 2 second delay
+          return // Don't set loading to false yet, wait for retry
+        } else {
+          // Profile doesn't exist or other error - just log and continue
+          if (error.code !== 'PGRST116') {
+            console.error('Error fetching profile:', error)
+          }
+          // Set profile to null if it doesn't exist
+          setProfile(null)
+          setLoading(false)
+        }
+      } else {
+        setProfile(data)
+        setLoading(false)
+        // Remove from fetching set on success
+        fetchingProfileRef.current.delete(userId)
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error)
+      setProfile(null)
+      setLoading(false)
+      // Remove from fetching set on error
+      fetchingProfileRef.current.delete(userId)
+    }
+  }, [])
 
   useEffect(() => {
     // Check active session
@@ -55,27 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
 
     return () => subscription.unsubscribe()
-  }, [])
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (error) {
-        console.error('Error fetching profile:', error)
-      } else {
-        setProfile(data)
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [fetchProfile])
 
   const signOut = async () => {
     await supabase.auth.signOut()

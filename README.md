@@ -1,65 +1,65 @@
-# Dashboard de Clientes
+# Clients Dashboard
 
-Dashboard para análise e monitoramento de serviços de clientes, integrado com Supabase.
+Dashboard for analyzing and monitoring client services, integrated with Supabase.
 
-## Tecnologias
+## Technologies
 
 - **React** + **TypeScript**
 - **Vite** - Build tool
-- **Tailwind CSS** - Estilização
-- **Supabase** - Banco de dados e backend
+- **Tailwind CSS** - Styling
+- **Supabase** - Database and backend
 
-## Serviços Suportados
+## Supported Services
 
-O dashboard está preparado para analisar os seguintes serviços:
+The dashboard is prepared to analyze the following services:
 
 - **Platforms**: Swoogo, WordPress, Drupal
 - **WordPress Plugins**
-- **Zapier** - Dados de automação
+- **Zapier** - Automation data
 - **Email Marketing**: MailJet, Constant Contact
 - **Social Media**: Facebook, X (Twitter), Instagram, LinkedIn, Reddit
 - **Google Services**: Analytics, Search Results, Ads
 - **Hosting Performance**
 
-## Configuração
+## Setup
 
-### 1. Instalar dependências
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Configurar variáveis de ambiente
+### 2. Configure environment variables
 
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+Create a `.env` file in the project root with the following variables:
 
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-Você pode encontrar essas credenciais no painel do Supabase em Settings > API.
+You can find these credentials in the Supabase dashboard under Settings > API.
 
-### 3. Executar o projeto
+### 3. Run the project
 
 ```bash
 npm run dev
 ```
 
-O projeto estará disponível em `http://localhost:5173`
+The project will be available at `http://localhost:5173`
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 src/
-  ├── components/        # Componentes reutilizáveis
+  ├── components/        # Reusable components
   │   ├── Card.tsx
   │   ├── Header.tsx
   │   ├── Layout.tsx
   │   └── MetricCard.tsx
-  ├── lib/              # Configurações
-  │   └── supabase.ts   # Cliente Supabase
-  ├── services/         # Serviços de integração
+  ├── lib/              # Configuration
+  │   └── supabase.ts   # Supabase client
+  ├── services/         # Integration services
   │   ├── platforms/
   │   ├── wp-plugins/
   │   ├── zapier/
@@ -67,23 +67,23 @@ src/
   │   ├── social/
   │   ├── google/
   │   └── hosting/
-  ├── types/            # Tipos TypeScript
+  ├── types/            # TypeScript types
   │   ├── index.ts
   │   └── supabase.ts
   ├── hooks/            # Custom hooks
-  └── App.tsx           # Componente principal
+  └── App.tsx           # Main component
 ```
 
-## Scripts Disponíveis
+## Available Scripts
 
-- `npm run dev` - Inicia o servidor de desenvolvimento
-- `npm run build` - Cria build de produção
-- `npm run preview` - Preview do build de produção
-- `npm run lint` - Executa o linter
+- `npm run dev` - Start development server
+- `npm run build` - Create production build
+- `npm run preview` - Preview production build
+- `npm run lint` - Run linter
 
-## Próximos Passos
+## Next Steps
 
-1. Configurar o schema do banco de dados no Supabase
-2. Implementar as integrações com cada serviço
-3. Criar componentes específicos para cada tipo de análise
-4. Adicionar autenticação (quando necessário)
+1. Configure the database schema in Supabase
+2. Implement integrations with each service
+3. Create specific components for each type of analysis
+4. Add authentication (when necessary)

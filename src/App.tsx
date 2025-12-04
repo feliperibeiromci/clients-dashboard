@@ -4,6 +4,10 @@ import { useAuth } from './contexts/AuthContext'
 import { Login } from './pages/Login'
 import { ForgotPassword } from './pages/ForgotPassword'
 import { ResetPassword } from './pages/ResetPassword'
+import { SignUp } from './pages/SignUp'
+import { TestInvite } from './pages/TestInvite'
+import { VerifyCode } from './pages/VerifyCode'
+import { Welcome } from './pages/Welcome'
 import { Sidebar } from './components/Sidebar'
 import { DashboardHeader } from './components/DashboardHeader'
 import { SessionsChart } from './components/SessionsChart'
@@ -12,6 +16,7 @@ import { SEOTermsTable } from './components/SEOTermsTable'
 import { ClientsPage } from './components/ClientsPage'
 import { UsersPage } from './components/UsersPage'
 import { ProjectsPage } from './components/ProjectsPage'
+import { Settings } from './pages/Settings'
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth()
@@ -70,6 +75,10 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/test-invite" element={<TestInvite />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route
@@ -117,7 +126,7 @@ function App() {
             path="/settings"
             element={
               <ProtectedLayout>
-                <div className="text-center py-10 text-gray-500">Settings Page (Coming Soon)</div>
+                <Settings />
               </ProtectedLayout>
             }
           />
