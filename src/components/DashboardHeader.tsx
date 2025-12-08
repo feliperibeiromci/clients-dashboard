@@ -1,34 +1,18 @@
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
+import { WelcomeSection } from './WelcomeSection'
 
 interface DashboardHeaderProps {
   userName?: string
-}
-
-// Remix Icon: notification-3-line
-const NotificationIcon: React.FC<{ className?: string }> = ({ className }) => {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        d="M20 18H18V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V18H4V20H20V18ZM16 18H8V11C8 8.52 9.51 6.5 12 6.5C14.49 6.5 16 8.52 16 11V18ZM12 21.5C12.83 21.5 13.5 20.83 13.5 20H10.5C10.5 20.83 11.17 21.5 12 21.5Z"
-        fill="currentColor"
-      />
-    </svg>
-  )
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   userName = 'Michele',
 }) => {
   return (
-    <header className="flex items-center justify-end w-full">
+    <header className="flex items-center justify-between w-full">
+      <WelcomeSection variant="desktop" />
+      
       <div className="flex items-center gap-2">
         <div className="relative group">
           <div className="flex items-center border border-[#45484D] rounded-full w-[300px] focus-within:border-gray-600 transition-colors">

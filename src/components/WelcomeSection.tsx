@@ -20,10 +20,38 @@ const NotificationIcon: React.FC<{ className?: string }> = ({ className }) => {
   )
 }
 
-export const WelcomeSection: React.FC = () => {
+interface WelcomeSectionProps {
+  variant?: 'mobile' | 'desktop'
+}
+
+export const WelcomeSection: React.FC<WelcomeSectionProps> = ({ variant = 'mobile' }) => {
   const { user } = useAuth()
   const userName = user?.email?.split('@')[0] || 'User'
 
+  if (variant === 'desktop') {
+    // Desktop version - integrated with header
+    return (
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-3">
+          <div className="border border-[#8F949A] rounded-[6px] shrink-0 w-12 h-12 flex items-center justify-center bg-transparent overflow-hidden">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#ABAEB3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="#ABAEB3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <p className="font-semibold leading-[24px] text-[#C7C9CD] text-xl tracking-[-0.4px]" style={{ fontFamily: 'Jost, sans-serif' }}>
+            Welcome, {userName}
+          </p>
+        </div>
+        
+        <button className="p-3 rounded-full text-gray-400 hover:text-white transition-colors relative">
+          <NotificationIcon className="w-5 h-5" />
+        </button>
+      </div>
+    )
+  }
+
+  // Mobile version - current layout
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center gap-3">

@@ -164,7 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-[320px] flex items-center gap-[10px] p-2 z-50">
+    <aside className="fixed left-0 top-0 h-full w-[320px] flex items-center gap-[10px] p-[10px] z-50">
       {/* Nav-side container - external container with no background */}
       <div className="h-full flex flex-col gap-[10px] flex-1">
         {/* Inner container with background #17181A and rounded corners */}

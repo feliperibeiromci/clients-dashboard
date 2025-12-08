@@ -50,21 +50,17 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
           
           {/* Desktop Header */}
-          <div className="hidden md:block px-5 pt-2 pb-1">
+          <div className="hidden md:block px-5 py-[15px]">
             <DashboardHeader userName={user.email?.split('@')[0] || 'User'} />
           </div>
           
-          {/* Welcome Section - Mobile */}
+          {/* Welcome Section - Mobile Only */}
           <div className="md:hidden px-5 pt-5 pb-0">
-            <WelcomeSection />
+            <WelcomeSection variant="mobile" />
           </div>
           
-          {/* Welcome Section - Desktop */}
-          <div className="hidden md:block px-5 pt-4 pb-0">
-            <WelcomeSection />
-          </div>
-          
-          <div className="h-px bg-[#2F3133] mx-5 mt-5 mb-0"></div>
+          {/* Divider - Only show on mobile after Welcome, on desktop show after header */}
+          <div className="h-px bg-[#2F3133] mx-5 mt-5 mb-0 md:mt-0 md:my-5"></div>
           
           <div className="px-5 pt-0 pb-2">
             {children}
