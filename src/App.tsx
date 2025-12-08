@@ -11,6 +11,7 @@ import { Welcome } from './pages/Welcome'
 import { Sidebar } from './components/Sidebar'
 import { DashboardHeader } from './components/DashboardHeader'
 import { MobileHeader } from './components/MobileHeader'
+import { WelcomeSection } from './components/WelcomeSection'
 import { SessionsChart } from './components/SessionsChart'
 import { OtherProjects } from './components/OtherProjects'
 import { SEOTermsTable } from './components/SEOTermsTable'
@@ -42,20 +43,30 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
       
       <main className="flex-1 md:ml-[320px] overflow-y-auto h-screen">
-        <div className="p-2">
+        <div className="p-0">
           {/* Mobile Header */}
-          <div className="md:hidden mb-5">
+          <div className="md:hidden">
             <MobileHeader />
           </div>
           
           {/* Desktop Header */}
-          <div className="hidden md:block px-5 py-1.5">
+          <div className="hidden md:block px-5 pt-2 pb-1">
             <DashboardHeader userName={user.email?.split('@')[0] || 'User'} />
           </div>
           
-          <div className="h-px bg-[#2F3133] mx-5 my-5"></div>
+          {/* Welcome Section - Mobile */}
+          <div className="md:hidden px-5 pt-5 pb-0">
+            <WelcomeSection />
+          </div>
           
-          <div className="px-2 py-2">
+          {/* Welcome Section - Desktop */}
+          <div className="hidden md:block px-5 pt-4 pb-0">
+            <WelcomeSection />
+          </div>
+          
+          <div className="h-px bg-[#2F3133] mx-5 mt-5 mb-0"></div>
+          
+          <div className="px-5 pt-0 pb-2">
             {children}
           </div>
         </div>
@@ -65,7 +76,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
 }
 
 const HomePage = () => (
-  <div className="flex gap-5">
+  <div className="flex flex-col md:flex-row gap-5">
     {/* Coluna Esquerda (Gráfico e Tabela) */}
     <div className="flex-1 flex flex-col gap-5">
       <SessionsChart />
@@ -73,7 +84,7 @@ const HomePage = () => (
     </div>
     
     {/* Coluna Direita (Projetos) */}
-    <div className="w-[400px] flex-shrink-0">
+    <div className="w-full md:w-[400px] flex-shrink-0">
       <OtherProjects />
     </div>
   </div>

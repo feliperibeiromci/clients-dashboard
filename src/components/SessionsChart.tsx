@@ -15,24 +15,24 @@ const data = [
 
 export const SessionsChart: React.FC = () => {
   return (
-    <div className="bg-[#17181A] p-5 rounded-[20px] border border-gray-800/50">
-      <div className="flex justify-between items-start mb-5">
-        <div>
-          <h2 className="text-[40px] font-semibold leading-[48px] text-white mb-1 tracking-[-0.8px]">Number of Sessions</h2>
-          <div className="flex items-center gap-1.5 text-[#ABAEB3] text-sm">
-            <div className="w-5 h-5">
-              <Diamond size={20} className="text-gray-500" />
+    <div className="bg-[#17181A] p-3 md:p-5 rounded-[20px] border border-gray-800/50">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 md:gap-0 mb-3 md:mb-5">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-xl md:text-[40px] font-semibold leading-[24px] md:leading-[48px] text-white mb-1 tracking-[-0.4px] md:tracking-[-0.8px]">Number of Sessions</h2>
+          <div className="flex items-center gap-1.5 text-[#ABAEB3] text-xs md:text-sm flex-wrap">
+            <div className="w-4 h-4 md:w-5 md:h-5">
+              <Diamond size={16} className="md:w-5 md:h-5 text-gray-500" />
             </div>
-            <span className="font-semibold text-lg leading-[21.6px]">New Clio Car Launch | Renault</span>
+            <span className="font-semibold text-sm md:text-lg leading-[18px] md:leading-[21.6px]">New Clio Car Launch | Renault</span>
           </div>
         </div>
-        <button className="flex items-center gap-1.5 text-xs font-medium text-white bg-[#414141] px-3 py-2 rounded-full hover:opacity-80 transition-opacity">
-          <span>See All Data</span>
-          <ArrowUpRight size={16} />
+        <button className="flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-white bg-[#414141] px-2.5 md:px-3 py-1.5 md:py-2 rounded-full hover:opacity-80 transition-opacity self-start md:self-auto">
+          <span>More</span>
+          <ArrowUpRight size={14} className="md:w-4 md:h-4" />
         </button>
       </div>
 
-      <div className="h-[260px] w-full">
+      <div className="h-[200px] md:h-[260px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
@@ -82,14 +82,14 @@ export const SessionsChart: React.FC = () => {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex justify-center items-center mt-5 gap-5">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-[#FF3856]"></span>
-          <span className="text-base text-[#ABAEB3]">Number of Sessions</span>
+      <div className="flex justify-center items-center mt-3 md:mt-5 gap-4 md:gap-5 flex-wrap">
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <span className="w-2 h-2 md:w-3 md:h-3 rounded bg-[#FF3856]"></span>
+          <span className="text-xs md:text-base text-[#ABAEB3] leading-[15.6px] md:leading-[20.8px] tracking-[-0.24px] md:tracking-[-0.32px]" style={{ fontFamily: 'Jost, sans-serif' }}>Number of Sessions</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-[#1500FE]"></span>
-          <span className="text-base text-[#ABAEB3]">Number of Unique Visitors</span>
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <span className="w-2 h-2 md:w-3 md:h-3 rounded bg-[#1500FE]"></span>
+          <span className="text-xs md:text-base text-[#ABAEB3] leading-[15.6px] md:leading-[20.8px] tracking-[-0.24px] md:tracking-[-0.32px]" style={{ fontFamily: 'Jost, sans-serif' }}>Number of Unique Visitors</span>
         </div>
       </div>
     </div>

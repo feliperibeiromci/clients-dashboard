@@ -28,13 +28,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   userName = 'Michele',
 }) => {
   return (
-    <header className="flex items-center justify-between w-full">
-      <div>
-        <h1 className="text-2xl font-semibold leading-[28.8px] text-[#C7C9CD] tracking-[-0.48px]">
-          Welcome, {userName}
-        </h1>
-      </div>
-      
+    <header className="flex items-center justify-end w-full">
       <div className="flex items-center gap-2">
         <div className="relative group">
           <div className="flex items-center border border-[#45484D] rounded-full w-[300px] focus-within:border-gray-600 transition-colors">
@@ -48,10 +42,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             />
           </div>
         </div>
-        
-        <button className="p-3 rounded-full text-gray-400 hover:text-white transition-colors relative">
-          <NotificationIcon className="w-5 h-5" />
-        </button>
       </div>
     </header>
   )
