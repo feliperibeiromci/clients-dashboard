@@ -25,7 +25,7 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
   const arcLength = circumference * progress
 
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square min-w-0 overflow-visible">
+    <div className="bg-[#17181A] rounded-[20px] p-4 flex flex-col gap-3 min-w-0 overflow-visible w-full h-[261px]">
       {/* Header */}
       <div className="flex items-start justify-between min-w-0">
         <div className="flex flex-col gap-1 flex-1 min-w-0">
@@ -55,16 +55,15 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
       </div>
 
       {/* Gauge semicircular chart - conforme design Figma */}
-      <div className="relative h-[141px] w-full flex items-center justify-center">
+      <div className="relative h-[130px] w-full flex items-center justify-center">
         {/* Background semicircle (track) - dark gray */}
         <svg 
           viewBox="0 0 261 141" 
           className="absolute left-1/2 top-0 -translate-x-1/2"
           style={{ 
-            width: '261px',
-            height: '141px',
+            width: '100%',
+            height: '130px',
             maxWidth: '100%',
-            aspectRatio: '261 / 141',
           }}
           preserveAspectRatio="xMidYMin meet"
         >
@@ -82,10 +81,9 @@ export const SiteSpeedMetric: React.FC<SiteSpeedMetricProps> = ({
           viewBox="0 0 261 141" 
           className="absolute left-1/2 top-0 -translate-x-1/2"
           style={{ 
-            width: '261px',
-            height: '141px',
+            width: '100%',
+            height: '130px',
             maxWidth: '100%',
-            aspectRatio: '261 / 141',
           }}
           preserveAspectRatio="xMidYMin meet"
         >

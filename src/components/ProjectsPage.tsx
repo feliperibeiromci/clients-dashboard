@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { ArrowUpRight, Plus } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { SiteSpeedMetric } from './projects/SiteSpeedMetric'
@@ -116,6 +116,33 @@ export const ProjectsPage: React.FC = () => {
   const [selectedClient, setSelectedClient] = useState<string>('all')
   const [isCreateClientModalOpen, setIsCreateClientModalOpen] = useState(false)
   const [activeProjectId, setActiveProjectId] = useState<number>(mockProjectsWithMetrics[0].id)
+  const [currentCardIndex, setCurrentCardIndex] = useState(0)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  
+  // Handle scroll to update current card index
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft
+      const cardWidth = container.clientWidth
+      const newIndex = Math.round(scrollLeft / cardWidth)
+      setCurrentCardIndex(newIndex)
+    }
+
+    container.addEventListener('scroll', handleScroll)
+    return () => container.removeEventListener('scroll', handleScroll)
+  }, [])
+  
+  // Scroll to specific card
+  const scrollToCard = (index: number) => {
+    const container = scrollContainerRef.current
+    if (container) {
+      const cardWidth = container.clientWidth
+      container.scrollTo({ left: index * cardWidth, behavior: 'smooth' })
+    }
+  }
 
   // Filter projects based on role
   const filteredProjects = mockProjectsWithMetrics.filter(project => {
@@ -165,52 +192,143 @@ export const ProjectsPage: React.FC = () => {
         </div>
       )}
 
-      {/* For client, maybe show only their metrics? */}
+      {/* For client, show Site Speed, Overall Traffic, Email Open Rate and Daily Conversions */}
       {!isAdmin && activeProject && (
-        <div className="grid grid-cols-4 gap-5">
-           <SiteSpeedMetric 
-            projectName={activeProject.name}
-            companyName={activeProject.company}
-            logo={activeProject.logo}
-            value={activeProject.metrics.siteSpeed.value}
-            status={activeProject.metrics.siteSpeed.status}
-          />
-          {/* Add placeholders or other metrics relevant to the client */}
-        </div>
+        <>
+          {/* Desktop: Grid layout */}
+          <div className="hidden md:flex gap-5 w-full">
+            <div className="flex-1 min-w-0">
+              <SiteSpeedMetric 
+                projectName={activeProject.name}
+                companyName={activeProject.company}
+                logo={activeProject.logo}
+                value={activeProject.metrics.siteSpeed.value}
+                status={activeProject.metrics.siteSpeed.status}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <OverallTrafficMetric 
+                projectName={activeProject.name}
+                companyName={activeProject.company}
+                logo={activeProject.logo}
+                value={activeProject.metrics.traffic.value}
+                trend={activeProject.metrics.traffic.trend}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <EmailOpenRateMetric 
+                projectName={activeProject.name}
+                companyName={activeProject.company}
+                logo={activeProject.logo}
+                percentage={activeProject.metrics.email.percentage}
+                opened={activeProject.metrics.email.opened}
+                total={activeProject.metrics.email.total}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <DailyConversionsMetric 
+                projectName={activeProject.name}
+                companyName={activeProject.company}
+                logo={activeProject.logo}
+              />
+            </div>
+          </div>
+
+          {/* Mobile: Carousel with scroll */}
+          <div className="md:hidden flex flex-col gap-5">
+            <div 
+              ref={scrollContainerRef}
+              className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+              style={{ scrollSnapType: 'x mandatory' }}
+            >
+              <div className="min-w-full snap-start flex-shrink-0">
+                <SiteSpeedMetric 
+                  projectName={activeProject.name}
+                  companyName={activeProject.company}
+                  logo={activeProject.logo}
+                  value={activeProject.metrics.siteSpeed.value}
+                  status={activeProject.metrics.siteSpeed.status}
+                />
+              </div>
+              <div className="min-w-full snap-start flex-shrink-0">
+                <OverallTrafficMetric 
+                  projectName={activeProject.name}
+                  companyName={activeProject.company}
+                  logo={activeProject.logo}
+                  value={activeProject.metrics.traffic.value}
+                  trend={activeProject.metrics.traffic.trend}
+                />
+              </div>
+              <div className="min-w-full snap-start flex-shrink-0">
+                <EmailOpenRateMetric 
+                  projectName={activeProject.name}
+                  companyName={activeProject.company}
+                  logo={activeProject.logo}
+                  percentage={activeProject.metrics.email.percentage}
+                  opened={activeProject.metrics.email.opened}
+                  total={activeProject.metrics.email.total}
+                />
+              </div>
+              <div className="min-w-full snap-start flex-shrink-0">
+                <DailyConversionsMetric 
+                  projectName={activeProject.name}
+                  companyName={activeProject.company}
+                  logo={activeProject.logo}
+                />
+              </div>
+            </div>
+            
+            {/* Dots indicator */}
+            <div className="flex items-center justify-center gap-4">
+              {[0, 1, 2, 3].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToCard(index)}
+                  className={`transition-all duration-300 rounded-full ${
+                    currentCardIndex === index
+                      ? 'w-[10px] h-[10px] bg-white'
+                      : 'w-[10px] h-[10px] bg-[#45484D]'
+                  }`}
+                  aria-label={`Go to card ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {/* All Your Projects section */}
-      <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5">
+      <div className="bg-[#17181A] rounded-[20px] p-3 md:p-5 flex flex-col gap-3 md:gap-5">
         {/* Header */}
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-3 md:gap-0">
           <div className="flex flex-col gap-1">
-            <h2 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px]">
+            <h2 className="text-xl md:text-2xl font-semibold leading-[24px] md:leading-[28.8px] text-[#F1F2F3] tracking-[-0.4px] md:tracking-[-0.48px]">
               {isAdmin ? 'All Projects' : 'Your Projects'}
             </h2>
             {isAdmin && (
               <div className="flex items-center gap-1.5">
-                <div className="w-5 h-5 relative">
+                <div className="w-4 h-4 md:w-5 md:h-5 relative">
                   <img src="/src/assets/images/logo.png" alt="MCI" className="w-full h-full object-contain" />
                 </div>
-                <span className="text-lg font-semibold leading-[21.6px] text-white tracking-[-0.36px]">
+                <span className="text-sm md:text-lg font-semibold leading-[18px] md:leading-[21.6px] text-white tracking-[-0.28px] md:tracking-[-0.36px]">
                   MCI Group
                 </span>
               </div>
             )}
           </div>
           
-          <div className="flex items-center gap-2">
-            <button className="bg-[#414141] hover:bg-[#414141]/80 text-white px-3 py-2 rounded-full flex items-center gap-1.5 transition-colors">
-              <span className="text-xs font-medium leading-[15.6px] tracking-[-0.24px]">See Full List</span>
-              <ArrowUpRight size={16} />
+          <div className="flex items-center gap-2 flex-wrap">
+            <button className="bg-[#414141] hover:bg-[#414141]/80 text-white px-2.5 md:px-3 py-1.5 md:py-2 rounded-full flex items-center gap-1.5 transition-colors text-[10px] md:text-xs font-medium leading-[13px] md:leading-[15.6px] tracking-[-0.2px] md:tracking-[-0.24px]">
+              <span>See Full List</span>
+              <ArrowUpRight size={14} className="md:w-4 md:h-4" />
             </button>
             {isAdmin && (
               <button 
                 onClick={() => setIsCreateClientModalOpen(true)}
-                className="bg-[#FF3856] hover:bg-[#FF3856]/90 text-white px-3 py-2 rounded-full flex items-center gap-1.5 transition-colors"
+                className="bg-[#FF3856] hover:bg-[#FF3856]/90 text-white px-2.5 md:px-3 py-1.5 md:py-2 rounded-full flex items-center gap-1.5 transition-colors text-[10px] md:text-xs font-medium leading-[13px] md:leading-[15.6px] tracking-[-0.2px] md:tracking-[-0.24px]"
               >
-                <span className="text-xs font-medium leading-[15.6px] tracking-[-0.24px]">Create a New Project</span>
-                <Plus size={16} />
+                <span>Create a New Project</span>
+                <Plus size={14} className="md:w-4 md:h-4" />
               </button>
             )}
           </div>
@@ -221,8 +339,8 @@ export const ProjectsPage: React.FC = () => {
           <ClientFilter selectedClient={selectedClient} onSelectClient={setSelectedClient} />
         )}
 
-        {/* Projects grid */}
-        <div className="grid grid-cols-4 gap-5">
+        {/* Projects grid - Responsive */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5">
           {filteredProjects.map((project) => (
             <ProjectCard
               key={project.id}
@@ -234,7 +352,7 @@ export const ProjectsPage: React.FC = () => {
             />
           ))}
           {filteredProjects.length === 0 && (
-            <div className="col-span-4 text-center py-10 text-gray-500">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4 text-center py-10 text-gray-500">
               No projects found.
             </div>
           )}

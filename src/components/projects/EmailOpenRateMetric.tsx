@@ -27,11 +27,11 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
   const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
+    <div className="bg-[#17181A] rounded-[20px] p-4 flex flex-col gap-3 min-w-0 overflow-visible w-full h-[261px]">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-1 flex-1">
-          <h3 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px]">
+      <div className="flex items-start justify-between min-w-0">
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
+          <h3 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px] truncate">
             {projectName}
           </h3>
           <div className="flex items-center gap-1">
@@ -57,7 +57,7 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
       </div>
 
       {/* Content with Chart and Stats */}
-      <div className="flex items-center gap-4 h-[141px]">
+      <div className="flex items-center gap-4 h-[130px]">
         {/* SVG Donut Chart */}
         <div className="relative w-[110px] h-[110px] shrink-0 flex items-center justify-center">
           <svg
@@ -66,12 +66,10 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
             className="transform -rotate-90 scale-y-[-1] overflow-visible"
           >
             <defs>
-              <filter id={`glow-${projectName}`} x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
+              <filter id={`glow-${projectName.replace(/\s+/g, '-')}`} x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 0.07 0.13 0 0  0 0 0.33 0 0  0 0 0 0.8 0" result="glow"/>
+                <feBlend in="SourceGraphic" in2="glow" mode="normal"/>
               </filter>
             </defs>
             {/* Background Circle */}
@@ -88,7 +86,10 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
               stroke="#FF3856"
               strokeWidth={strokeWidth}
               strokeDasharray={`${circumference} ${circumference}`}
-              style={{ strokeDashoffset, filter: `url(#glow-${projectName})` }}
+              style={{ 
+                strokeDashoffset, 
+                filter: `url(#glow-${projectName.replace(/\s+/g, '-')})` 
+              }}
               strokeLinecap="round"
               fill="transparent"
               r={normalizedRadius}
@@ -99,10 +100,16 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
           
           {/* Text inside circle */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-lg font-bold text-white leading-tight">
+            <span 
+              className="text-lg font-bold text-white leading-tight"
+              style={{ fontFamily: 'Jost, sans-serif', fontWeight: 600 }}
+            >
               {total.toLocaleString()}
             </span>
-            <span className="text-[10px] text-[#ABAEB3] font-medium">
+            <span 
+              className="text-[10px] text-[#ABAEB3] font-medium"
+              style={{ fontFamily: 'Jost, sans-serif' }}
+            >
               Emails
             </span>
           </div>
@@ -110,10 +117,16 @@ export const EmailOpenRateMetric: React.FC<EmailOpenRateMetricProps> = ({
 
         {/* Stats Text */}
         <div className="flex flex-col">
-          <span className="text-5xl font-semibold text-[#F1F2F3] tracking-[-1px]">
+          <span 
+            className="text-5xl font-semibold text-[#F1F2F3] tracking-[-1px]"
+            style={{ fontFamily: 'Jost, sans-serif', fontWeight: 600 }}
+          >
             {percentage}%
           </span>
-          <p className="text-xs text-[#ABAEB3] mt-1">
+          <p 
+            className="text-xs text-[#ABAEB3] mt-1"
+            style={{ fontFamily: 'Jost, sans-serif' }}
+          >
             {opened.toLocaleString()} of {total.toLocaleString()} emails opened
           </p>
         </div>

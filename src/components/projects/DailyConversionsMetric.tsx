@@ -30,11 +30,11 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
   logo,
 }) => {
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
+    <div className="bg-[#17181A] rounded-[20px] p-4 flex flex-col gap-3 min-w-0 overflow-visible w-full h-[261px]">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-1 flex-1">
-          <h3 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px]">
+      <div className="flex items-start justify-between min-w-0">
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
+          <h3 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px] truncate">
             {projectName}
           </h3>
           <div className="flex items-center gap-1">
@@ -60,7 +60,7 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
       </div>
 
       {/* Bar chart */}
-      <div className="flex flex-col gap-2 h-[141px] py-2">
+      <div className="flex flex-col gap-2 h-[130px] py-2">
         <div className="flex items-end justify-between gap-3 flex-1 px-2">
           {conversionData.map((item, index) => (
             <div key={index} className="flex flex-col gap-2 flex-1 items-center justify-end h-full">
@@ -94,13 +94,19 @@ export const DailyConversionsMetric: React.FC<DailyConversionsMetricProps> = ({
         <div className="flex items-center justify-center gap-6 mt-auto">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-[#FF3856] rounded-[4px]" />
-            <span className="text-[13px] leading-none text-[#ABAEB3] tracking-[-0.26px] font-medium">
+            <span 
+              className="text-[13px] leading-none text-[#ABAEB3] tracking-[-0.26px] font-medium"
+              style={{ fontFamily: 'Jost, sans-serif' }}
+            >
               Conversions
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-[#1500FE] rounded-[4px]" />
-            <span className="text-[13px] leading-none text-[#ABAEB3] tracking-[-0.26px] font-medium">
+            <span 
+              className="text-[13px] leading-none text-[#ABAEB3] tracking-[-0.26px] font-medium"
+              style={{ fontFamily: 'Jost, sans-serif' }}
+            >
               Bounce Rate
             </span>
           </div>

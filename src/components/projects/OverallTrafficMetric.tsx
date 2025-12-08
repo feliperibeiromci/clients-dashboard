@@ -55,16 +55,17 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
   const isPositive = trend === 'up';
   const trendColor = isPositive ? '#45C347' : '#FF3856';
   const TrendIcon = isPositive ? ArrowUp : ArrowDown;
+  const chartColor = '#FF3856'; // Cor fixa do gráfico
 
   // Create a safe ID for the gradient
   const gradientId = `trafficGradient-${projectName.replace(/\s+/g, '-')}`;
 
   return (
-    <div className="bg-[#17181A] rounded-[20px] p-5 flex flex-col gap-5 aspect-square">
+    <div className="bg-[#17181A] rounded-[20px] p-4 flex flex-col gap-3 min-w-0 overflow-visible w-full h-[261px]">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-1 flex-1">
-          <h3 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px]">
+      <div className="flex items-start justify-between min-w-0">
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
+          <h3 className="text-2xl font-semibold leading-[28.8px] text-[#F1F2F3] tracking-[-0.48px] truncate">
             {projectName}
           </h3>
           <div className="flex items-center gap-1">
@@ -90,7 +91,7 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
       </div>
 
       {/* Line chart with area */}
-      <div className="relative h-[141px] w-full">
+      <div className="relative h-[130px] w-full">
         {/* Trend indicator */}
         <div className="absolute left-4 top-2.5 flex items-center gap-2 z-10">
           <div className="relative">
@@ -98,14 +99,20 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
               className="w-5 h-5 border bg-opacity-10 rounded flex items-center justify-center"
               style={{ borderColor: trendColor, backgroundColor: `${trendColor}1A` }}
             >
-              <TrendIcon size={20} style={{ color: trendColor }} />
+              <TrendIcon size={16} style={{ color: trendColor }} />
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]">
+            <span 
+              className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]"
+              style={{ fontFamily: 'Jost, sans-serif', fontWeight: 600 }}
+            >
               {value}
             </span>
-            <span className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]">
+            <span 
+              className="text-4xl font-semibold leading-[48px] text-[#F1F2F3] tracking-[-0.8px]"
+              style={{ fontFamily: 'Jost, sans-serif', fontWeight: 600 }}
+            >
               %
             </span>
           </div>
@@ -115,15 +122,15 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
           <AreaChart data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={trendColor} stopOpacity={0.2} />
-                <stop offset="95%" stopColor={trendColor} stopOpacity={0} />
+                <stop offset="5%" stopColor={chartColor} stopOpacity={0.2} />
+                <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
               </linearGradient>
             </defs>
             <YAxis hide domain={['dataMin - 5', 'dataMax + 5']} />
             <Area
               type="monotone"
               dataKey="value"
-              stroke={trendColor}
+              stroke={chartColor}
               strokeWidth={2}
               fill={`url(#${gradientId})`}
             />
@@ -134,7 +141,7 @@ export const OverallTrafficMetric: React.FC<OverallTrafficMetricProps> = ({
                 borderRadius: '8px',
                 color: '#F1F2F3',
               }}
-              itemStyle={{ color: trendColor }}
+              itemStyle={{ color: chartColor }}
               labelStyle={{ color: '#ABAEB3' }}
               formatter={(value: number) => [`${value.toFixed(0)}%`, 'Traffic']}
             />

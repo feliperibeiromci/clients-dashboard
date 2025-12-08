@@ -10,6 +10,7 @@ import { VerifyCode } from './pages/VerifyCode'
 import { Welcome } from './pages/Welcome'
 import { Sidebar } from './components/Sidebar'
 import { DashboardHeader } from './components/DashboardHeader'
+import { MobileHeader } from './components/MobileHeader'
 import { SessionsChart } from './components/SessionsChart'
 import { OtherProjects } from './components/OtherProjects'
 import { SEOTermsTable } from './components/SEOTermsTable'
@@ -35,11 +36,20 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex min-h-screen bg-[#0b0c0d] text-white font-sans">
-      <Sidebar />
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
       
-      <main className="flex-1 ml-[320px] overflow-y-auto h-screen">
+      <main className="flex-1 md:ml-[320px] overflow-y-auto h-screen">
         <div className="p-2">
-          <div className="px-5 py-1.5">
+          {/* Mobile Header */}
+          <div className="md:hidden mb-5">
+            <MobileHeader />
+          </div>
+          
+          {/* Desktop Header */}
+          <div className="hidden md:block px-5 py-1.5">
             <DashboardHeader userName={user.email?.split('@')[0] || 'User'} />
           </div>
           
