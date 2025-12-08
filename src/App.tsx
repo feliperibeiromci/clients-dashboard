@@ -18,6 +18,7 @@ import { SEOTermsTable } from './components/SEOTermsTable'
 import { ClientsPage } from './components/ClientsPage'
 import { UsersPage } from './components/UsersPage'
 import { ProjectsPage } from './components/ProjectsPage'
+import { ReportsPage } from './components/ReportsPage'
 import { Settings } from './pages/Settings'
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
@@ -130,12 +131,11 @@ function App() {
               </ProtectedLayout>
             }
           />
-          {/* Placeholder routes for now */}
           <Route
             path="/reports"
             element={
               <ProtectedLayout>
-                <div className="text-center py-10 text-gray-500">Reports Page (Coming Soon)</div>
+                <ReportsPage />
               </ProtectedLayout>
             }
           />

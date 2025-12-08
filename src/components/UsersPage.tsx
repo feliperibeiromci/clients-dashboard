@@ -3,6 +3,7 @@ import { Plus, ChevronsUpDown, Trash2, Edit2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { CreateUserModal } from './users/CreateUserModal'
 import { ClientLogo } from './projects/ClientLogo'
+import { useAuth } from '../contexts/AuthContext'
 
 interface UserData {
   id: string
@@ -14,10 +15,11 @@ interface UserData {
 }
 
 export const UsersPage: React.FC = () => {
+  const { appRole, isAdmin } = useAuth()
   const [users, setUsers] = useState<UserData[]>([])
   const [loading, setLoading] = useState(true)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState<'all' | 'individuals' | 'companies'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'admins' | 'collaborators' | 'clients'>('all')
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set())
   const [editingUser, setEditingUser] = useState<UserData | null>(null)
 
@@ -43,9 +45,17 @@ export const UsersPage: React.FC = () => {
     fetchUsers()
   }, [])
 
-  const handleTabChange = (tab: 'all' | 'individuals' | 'companies') => {
+  const handleTabChange = (tab: 'all' | 'admins' | 'collaborators' | 'clients') => {
     setActiveTab(tab)
   }
+
+  const filteredUsers = users.filter(user => {
+    if (activeTab === 'all') return true
+    if (activeTab === 'admins') return user.app_role === 'Admin'
+    if (activeTab === 'collaborators') return user.app_role === 'Editor'
+    if (activeTab === 'clients') return user.app_role === 'Viewer'
+    return true
+  })
 
   const toggleUserSelection = (userId: string) => {
     const newSelection = new Set(selectedUsers)
@@ -58,10 +68,10 @@ export const UsersPage: React.FC = () => {
   }
 
   const toggleAllSelection = () => {
-    if (selectedUsers.size === users.length) {
+    if (selectedUsers.size === filteredUsers.length && filteredUsers.length > 0) {
       setSelectedUsers(new Set())
     } else {
-      setSelectedUsers(new Set(users.map(u => u.id)))
+      setSelectedUsers(new Set(filteredUsers.map(u => u.id)))
     }
   }
 
@@ -107,67 +117,81 @@ export const UsersPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header with Tabs and Buttons */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => handleTabChange('all')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            className={`px-4 py-1.5 rounded-[4px] text-sm font-medium transition-all border ${
               activeTab === 'all' 
-                ? 'bg-[#2F3133] text-white' 
-                : 'text-[#ABAEB3] hover:text-white'
+                ? 'bg-[#5D6166] text-white border-[#5D6166]' 
+                : 'bg-[#161719] text-white border-[#747980] hover:border-[#ABAEB3]'
             }`}
           >
-            All Users
+            All Clients
           </button>
           <button
-            onClick={() => handleTabChange('individuals')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === 'individuals' 
-                ? 'bg-[#2F3133] text-white' 
-                : 'text-[#ABAEB3] hover:text-white'
+            onClick={() => handleTabChange('admins')}
+            className={`px-4 py-1.5 rounded-[4px] text-sm font-medium transition-all border ${
+              activeTab === 'admins' 
+                ? 'bg-[#5D6166] text-white border-[#5D6166]' 
+                : 'bg-[#161719] text-white border-[#747980] hover:border-[#ABAEB3]'
             }`}
           >
-            Individuals
+            Admins
           </button>
           <button
-            onClick={() => handleTabChange('companies')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeTab === 'companies' 
-                ? 'bg-[#2F3133] text-white' 
-                : 'text-[#ABAEB3] hover:text-white'
+            onClick={() => handleTabChange('collaborators')}
+            className={`px-4 py-1.5 rounded-[4px] text-sm font-medium transition-all border ${
+              activeTab === 'collaborators' 
+                ? 'bg-[#5D6166] text-white border-[#5D6166]' 
+                : 'bg-[#161719] text-white border-[#747980] hover:border-[#ABAEB3]'
             }`}
           >
-            Companies
+            Collaborators
+          </button>
+          <button
+            onClick={() => handleTabChange('clients')}
+            className={`px-4 py-1.5 rounded-[4px] text-sm font-medium transition-all border ${
+              activeTab === 'clients' 
+                ? 'bg-[#5D6166] text-white border-[#5D6166]' 
+                : 'bg-[#161719] text-white border-[#747980] hover:border-[#ABAEB3]'
+            }`}
+          >
+            Clients
           </button>
         </div>
 
         <div className="flex items-center gap-2">
-          {selectedUsers.size > 0 && (
-            <button 
-              onClick={handleDeleteSelected}
-              className="flex items-center space-x-2 bg-[#2F3133] hover:bg-red-900/50 text-red-500 px-4 py-2 rounded-full text-sm font-medium transition-colors"
-            >
-              <span>Delete ({selectedUsers.size})</span>
-              <Trash2 size={16} />
-            </button>
-          )}
-          
-          {selectedUsers.size === 1 && (
-             <button 
-              onClick={handleEdit}
-              className="flex items-center space-x-2 bg-[#2F3133] hover:bg-[#45484D] text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-            >
-              <span>Edit</span>
-              <Edit2 size={16} />
-            </button>
-          )}
+          {isAdmin && (
+            <>
+              {selectedUsers.size > 0 && (
+                <button 
+                  onClick={handleDeleteSelected}
+                  className="flex items-center space-x-2 bg-[#2F3133] hover:bg-red-900/50 text-red-500 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                >
+                  <span>Delete ({selectedUsers.size})</span>
+                  <Trash2 size={16} />
+                </button>
+              )}
+              
+              {selectedUsers.size === 1 && (
+                <button 
+                  onClick={handleEdit}
+                  className="flex items-center space-x-2 bg-[#2F3133] hover:bg-[#45484D] text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                >
+                  <span>Edit</span>
+                  <Edit2 size={16} />
+                </button>
+              )}
 
-          <button 
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center space-x-2 bg-[#FF3856] hover:bg-[#FF3856]/90 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-          >
-            <span>Add New User</span>
-            <Plus size={16} />
-          </button>
+              <button 
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex items-center space-x-2 bg-[#FF3856] hover:bg-[#FF3856]/90 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+              >
+                <span>Add New User</span>
+                <Plus size={16} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -180,12 +204,12 @@ export const UsersPage: React.FC = () => {
                 <div 
                   onClick={toggleAllSelection}
                   className={`w-5 h-5 border rounded cursor-pointer flex items-center justify-center ${
-                    selectedUsers.size > 0 && selectedUsers.size === users.length 
+                    selectedUsers.size > 0 && selectedUsers.size === filteredUsers.length 
                       ? 'border-[#FF3856] bg-transparent' 
                       : 'border-[#ABAEB3] bg-transparent'
                   }`}
                 >
-                  {selectedUsers.size > 0 && selectedUsers.size === users.length && <div className="w-2.5 h-2.5 bg-[#FF3856] rounded-[2px]" />}
+                  {selectedUsers.size > 0 && selectedUsers.size === filteredUsers.length && <div className="w-2.5 h-2.5 bg-[#FF3856] rounded-[2px]" />}
                 </div>
               </th>
               <th className="py-4 px-4 text-sm font-medium text-[#ABAEB3]">
@@ -227,14 +251,14 @@ export const UsersPage: React.FC = () => {
                   Loading users...
                 </td>
               </tr>
-            ) : users.length === 0 ? (
+            ) : filteredUsers.length === 0 ? (
               <tr>
                 <td colSpan={6} className="py-8 text-center text-[#ABAEB3]">
                   No users found. Click "Add New User" to create one.
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
+              filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-[#17181A] transition-colors group">
                   <td className="py-4 px-4">
                     <div 

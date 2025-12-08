@@ -289,7 +289,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
 
               {/* Filters & Search */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
-                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar max-w-[60%]">
+                <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar max-w-[60%] pb-2">
                   {companies.map(company => (
                     <button
                       key={company}
